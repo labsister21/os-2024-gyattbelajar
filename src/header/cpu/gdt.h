@@ -1,4 +1,4 @@
-    #ifndef _GDT_H
+#ifndef _GDT_H
 #define _GDT_H
 
 #include <stdint.h>
@@ -35,7 +35,7 @@ struct SegmentDescriptor {
     uint8_t type_bit   : 4;
     uint8_t non_system : 1;
     uint8_t dpl: 2;
-    uint8_t segment_present: 2;
+    uint8_t segment_present: 1;
     uint8_t seg_limit: 4;
     uint8_t avl: 1;
     uint8_t code_segment: 1;
