@@ -92,6 +92,7 @@
 - [Teams](https://docs.google.com/spreadsheets/d/1IjofJU7STaYPVOte2DYM28U3t6D67FddbMigU7Sp_Bo/edit#gid=2052696959)
 - [IF2230 Hub OS](https://docs.google.com/document/d/1X_tgtBZ0KwjRRfyjQmozmAY3Q74JqgWiRd0Ag1a34G8/edit)
 - [IF2230 Guide Book](https://docs.google.com/document/d/1EafdqpKWpYpU08w8AmKrEDCedrh8PvnGJ3bJWZEeFPU/edit)
+- [Q & A](https://docs.google.com/spreadsheets/d/1rNPvGYgwL01TW3rRRyD6vJnfFd23knJb0enbeTEDYPc/edit#gid=59385452)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
