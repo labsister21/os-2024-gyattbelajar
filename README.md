@@ -99,7 +99,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-General Explanation about the project, Why you made this, What does it do exactly.  
+This project is intended as an introduction to kernel development and showcases subsystems within the operating system. The target operating system is x86 32-bit Protected Mode, where it will run on QEMU.
 
 <!-- OPTIONAL LINK OR REFERENCE -->
 <!-- <p align="center">
