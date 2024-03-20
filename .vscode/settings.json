@@ -3,6 +3,10 @@
     "files.associations": {
         "*.embeddedhtml": "html",
         "gdt.h": "c",
-        "kernel-entrypoint.h": "c"
+        "kernel-entrypoint.h": "c",
+        "stdbool.h": "c",
+        "framebuffer.h": "c",
+        "string.h": "c",
+        "stdint.h": "c"
     },
 }
