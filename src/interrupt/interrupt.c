@@ -1,5 +1,12 @@
 #include "interrupt.h"
 #include "../lib-header/portio.h"
+#include "idt.h"
+
+void main_interrupt_handler(struct InterruptFrame frame) {
+    switch (frame.int_number) {
+        // ...
+    }
+}
 
 
 void io_wait(void) {
