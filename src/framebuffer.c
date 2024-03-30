@@ -2,6 +2,7 @@
 #include "lib-header/portio.h"
 #include "lib-header/string.h"
 
+
 void framebuffer_set_cursor(uint8_t r, uint8_t c) {
     uint16_t pos = r * COLUMN + c;
  
@@ -18,6 +19,7 @@ void framebuffer_write(uint8_t row, uint8_t col, char c, uint8_t fg, uint8_t bg)
     memset(position, c, 1);
     memset(position + 1, attributes, 1);
 }
+
 void framebuffer_clear(void) {
     for (int i = 0; i < ROW; i++)
     {

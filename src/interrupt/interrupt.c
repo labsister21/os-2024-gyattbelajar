@@ -1,10 +1,14 @@
 #include "interrupt.h"
 #include "../lib-header/portio.h"
+#include "../lib-header/keyboard.h"
 #include "idt.h"
-
+int count = 0;
 void main_interrupt_handler(struct InterruptFrame frame) {
     switch (frame.int_number) {
-        // ...
+        case 0x21:
+            count++;
+            keyboard_isr();
+            break;
     }
 }
 
@@ -42,4 +46,12 @@ void pic_remap(void) {
     out(PIC1_DATA, PIC_DISABLE_ALL_MASK);
     out(PIC2_DATA, PIC_DISABLE_ALL_MASK);
 
+}
+
+void activate_keyboard_interrupt(void) {
+    out(PIC1_DATA, in(PIC1_DATA) & ~(1 << IRQ_KEYBOARD));
+}
+
+void deactivate_keyboard_interrupt(void) {
+    out(PIC1_DATA, PIC_DISABLE_ALL_MASK);
 }

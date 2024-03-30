@@ -11,6 +11,7 @@
 #define COLUMN 80
 #define ROW 25
 
+
 /**
  * Terminal framebuffer
  * Resolution: 80x25
