@@ -2,10 +2,6 @@
 #include "../lib-header/framebuffer.h"
 #include "../lib-header/portio.h"
 #include "../lib-header/string.h"
-// #include "header/driver/keyboard.h"
-// #include "header/driver/framebuffer.h"
-// #include "header/cpu/portio.h"
-// #include "header/stdlib/string.h"
 
 
 int current_framebuffer_pos_row = 0;
@@ -88,6 +84,7 @@ void keyboard_isr(void) {
 
     if (!keyboard_state.keyboard_input_on) {
         keyboard_state.current_index = 0;
+        return;
     }
     else {
         switch (scancode) {
@@ -131,65 +128,70 @@ void keyboard_isr(void) {
         }
         // backspace
         else {
-        if (converted == '\b') {
-            if (keyboard_state.current_index > 0)
-            {
-                keyboard_state.current_index--;
-                keyboard_state.keyboard_buffer[keyboard_state.current_index] = '\0';
-                if (current_framebuffer_pos_col == 0)
-                {
-                    current_framebuffer_pos_row--;
-                    current_framebuffer_pos_col = COLUMN - 1;
-                    if (current_framebuffer_pos_row < 0)
-                    {
-                        current_framebuffer_pos_row = 0;
-                        current_framebuffer_pos_col = 0;
+            if (converted == '\b') {
+                // Cek apakah ada karakter lain pada keyboard_buffer
+                if (keyboard_state.current_index > 0) {
+                    // Sudah di ujung paling kiri
+                    if (current_framebuffer_pos_col == 0) {
+                        // Jika sudah di paling atas
+                        if (current_framebuffer_pos_row == 0) {
+                            framebuffer_set_cursor(current_framebuffer_pos_row, current_framebuffer_pos_col);
+                            pic_ack(IRQ_KEYBOARD);
+                            return;
+                        }
+                        current_framebuffer_pos_row--;
+                        current_framebuffer_pos_col = COLUMN - 1;
+                    }
+                    // normal backspace
+                    else {
+                        keyboard_state.current_index--;
+                        current_framebuffer_pos_col--;
+                        keyboard_state.keyboard_buffer[keyboard_state.current_index] = ' '; // Hilangkan karakter jadi kosong (spasi)
+                        framebuffer_write(current_framebuffer_pos_row, current_framebuffer_pos_col, ' ', 0xFF, 0);
                     }
                 }
-                else
-                {
-                    current_framebuffer_pos_col--;
+                // Character sudah habis
+                else {
+                    current_framebuffer_pos_col = 0;
+                    current_framebuffer_pos_row = 0;
                 }
-
+                framebuffer_set_cursor(current_framebuffer_pos_row, current_framebuffer_pos_col);
+                pic_ack(IRQ_KEYBOARD);
+                return;
+            }
+            // new line
+            else if (converted == '\n') {
+                memset(keyboard_state.keyboard_buffer, '\0', sizeof(keyboard_state.keyboard_buffer));
+                keyboard_state.current_index = 0;
+                keyboard_state.keyboard_input_on = 0;
+                current_framebuffer_pos_row++;
+                current_framebuffer_pos_col = 0;
                 framebuffer_write(current_framebuffer_pos_row, current_framebuffer_pos_col, '\0', 0x0, 0);
                 framebuffer_set_cursor(current_framebuffer_pos_row, current_framebuffer_pos_col);
                 pic_ack(IRQ_KEYBOARD);
                 return;
             }
-        }
-        // new line
-        else if (converted == '\n') {
-            memset(keyboard_state.keyboard_buffer, '\0', sizeof(keyboard_state.keyboard_buffer));
-            keyboard_state.current_index = 0;
-            keyboard_state.keyboard_input_on = 0;
-            current_framebuffer_pos_row++;
-            current_framebuffer_pos_col = 0;
-            framebuffer_write(current_framebuffer_pos_row, current_framebuffer_pos_col, '\0', 0x0, 0);
-            framebuffer_set_cursor(current_framebuffer_pos_row, current_framebuffer_pos_col);
-            pic_ack(IRQ_KEYBOARD);
-            return;
-        }
-        else {
-            if (converted >= 'a' && converted <= 'z') {
-                if (keyboard_state.capslock ^ shift_pressed()) {
-                    converted = 'A' + converted - 'a';
-                } 
+            else {
+                if (converted >= 'a' && converted <= 'z') {
+                    if (keyboard_state.capslock ^ shift_pressed()) {
+                        converted = 'A' + converted - 'a';
+                    } 
+                }
+                else if (shift_pressed() && converted < 97 && shift_map[(uint8_t)converted] != 0)
+                {
+                    converted = shift_map[(uint8_t)converted];
+                }
+                keyboard_state.keyboard_buffer[keyboard_state.current_index] = converted;
+                keyboard_state.current_index++;
             }
-            else if (shift_pressed() && converted < 97 && shift_map[(uint8_t)converted] != 0)
-            {
-                converted = shift_map[(uint8_t)converted];
-            }
-            keyboard_state.keyboard_buffer[keyboard_state.current_index] = converted;
-            keyboard_state.current_index++;
-        }
 
-        if (current_framebuffer_pos_col >= COLUMN) {
-            current_framebuffer_pos_row++;
-            current_framebuffer_pos_col = 0;
+            if (current_framebuffer_pos_col >= COLUMN) {
+                current_framebuffer_pos_row++;
+                current_framebuffer_pos_col = 0;
+            }
+            framebuffer_write(current_framebuffer_pos_row, current_framebuffer_pos_col, converted, 0xFF, 0);
+            current_framebuffer_pos_col++;
         }
-        framebuffer_write(current_framebuffer_pos_row, current_framebuffer_pos_col, converted, 0xFF, 0);
-        current_framebuffer_pos_col++;
-    }
     framebuffer_set_cursor(current_framebuffer_pos_row, current_framebuffer_pos_col);}
     pic_ack(IRQ_KEYBOARD);
     // / TODO : Implement scancode processing
