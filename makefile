@@ -7,6 +7,8 @@ CC            = gcc
 SOURCE_FOLDER = src
 OUTPUT_FOLDER = bin
 ISO_NAME      = OS2024
+# ISO_NAME      = os2024
+ISO_NAME      = OS2024
 
 # Flags
 WARNING_CFLAG = -Wall -Wextra -Werror
@@ -16,14 +18,21 @@ CFLAGS        = $(DEBUG_CFLAG) $(WARNING_CFLAG) $(STRIP_CFLAG) -m32 -c -I$(SOURC
 AFLAGS        = -f elf32 -g -F dwarf
 LFLAGS        = -T $(SOURCE_FOLDER)/linker.ld -melf_i386
 
+DISK_NAME      = storage
 
 run: all
-	@qemu-system-i386 -s -S -cdrom $(OUTPUT_FOLDER)/$(ISO_NAME).iso
+	@qemu-system-i386 -s -S -drive file=storage.bin,format=raw,if=ide,index=0,media=disk -cdrom $(OUTPUT_FOLDER)/$(ISO_NAME).iso
 all: build
 build: iso
 clean:
 	rm -rf *.o *.iso $(OUTPUT_FOLDER)/kernel
 
+reset_disk:
+	rm $(OUTPUT_FOLDER)/$(DISK_NAME).bin
+	@make disk
+
+disk:
+	@qemu-img create -f raw $(OUTPUT_FOLDER)/$(DISK_NAME).bin 4M
 
 kernel:
 	@$(ASM) $(AFLAGS) $(SOURCE_FOLDER)/interrupt/intsetup.s -o $(OUTPUT_FOLDER)/intsetup.o
@@ -36,6 +45,7 @@ kernel:
 	@$(CC) $(CFLAGS) $(SOURCE_FOLDER)/interrupt/idt.c -o $(OUTPUT_FOLDER)/idt.o
 	@$(CC) $(CFLAGS) $(SOURCE_FOLDER)/interrupt/interrupt.c -o $(OUTPUT_FOLDER)/interrupt.o
 	@$(CC) $(CFLAGS) $(SOURCE_FOLDER)/system/keyboard.c -o $(OUTPUT_FOLDER)/keyboard.o
+	@$(CC) $(CFLAGS) $(SOURCE_FOLDER)/file-system/disk.c -o $(OUTPUT_FOLDER)/disk.o
 	@$(LIN) $(LFLAGS) bin/*.o -o $(OUTPUT_FOLDER)/kernel
 	@echo Linking object files and generate elf32...
 	@rm -f *.o

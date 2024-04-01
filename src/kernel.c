@@ -3,6 +3,7 @@
 #include "lib-header/gdt.h"
 #include "lib-header/framebuffer.h"
 #include "lib-header/kernel-entrypoint.h"
+#include "file-system/disk.h"
 #include "interrupt/idt.h"
 #include "lib-header/keyboard.h"
 #include "interrupt/interrupt.h"
