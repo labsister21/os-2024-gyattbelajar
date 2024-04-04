@@ -9,6 +9,8 @@ OUTPUT_FOLDER = bin
 ISO_NAME      = OS2024
 # ISO_NAME      = os2024
 ISO_NAME      = OS2024
+# STORAGE_FILE = sample-image
+STORAGE_FILE = storage
 
 # Flags
 WARNING_CFLAG = -Wall -Wextra -Werror
@@ -21,7 +23,7 @@ LFLAGS        = -T $(SOURCE_FOLDER)/linker.ld -melf_i386
 DISK_NAME      = storage
 
 run: all
-	@qemu-system-i386 -s -S -drive file=storage.bin,format=raw,if=ide,index=0,media=disk -cdrom $(OUTPUT_FOLDER)/$(ISO_NAME).iso
+	@qemu-system-i386 -s -S -drive file=$(OUTPUT_FOLDER)/$(STORAGE_FILE).bin,format=raw,if=ide,index=0,media=disk -cdrom $(OUTPUT_FOLDER)/$(ISO_NAME).iso
 all: build
 build: iso
 clean:

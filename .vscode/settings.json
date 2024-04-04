@@ -1,6 +1,8 @@
 {
     "debug.onTaskErrors": "debugAnyway",
     "files.associations": {
+        "*.pl": "prolog",
+        "*.c": "c",
         "*.embeddedhtml": "html",
         "gdt.h": "c",
         "kernel-entrypoint.h": "c",
@@ -8,6 +10,8 @@
         "framebuffer.h": "c",
         "string.h": "c",
         "stdint.h": "c",
-        "interrupt.h": "c"
+        "interrupt.h": "c",
+        "stddef.h": "c",
+        "fat32.h": "c"
     },
 }
