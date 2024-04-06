@@ -133,14 +133,9 @@ void keyboard_isr(void) {
                 if (keyboard_state.current_index > 0) {
                     // Sudah di ujung paling kiri
                     if (current_framebuffer_pos_col == 0) {
-                        // Jika sudah di paling atas
-                        if (current_framebuffer_pos_row == 0) {
-                            framebuffer_set_cursor(current_framebuffer_pos_row, current_framebuffer_pos_col);
-                            pic_ack(IRQ_KEYBOARD);
-                            return;
-                        }
-                        current_framebuffer_pos_row--;
-                        current_framebuffer_pos_col = COLUMN - 1;
+                        framebuffer_set_cursor(current_framebuffer_pos_row, current_framebuffer_pos_col);
+                        pic_ack(IRQ_KEYBOARD);
+                        return;
                     }
                     // normal backspace
                     else {
@@ -153,7 +148,6 @@ void keyboard_isr(void) {
                 // Character sudah habis
                 else {
                     current_framebuffer_pos_col = 0;
-                    current_framebuffer_pos_row = 0;
                 }
                 framebuffer_set_cursor(current_framebuffer_pos_row, current_framebuffer_pos_col);
                 pic_ack(IRQ_KEYBOARD);
