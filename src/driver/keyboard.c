@@ -3,7 +3,7 @@
 #include "../lib-header/portio.h"
 #include "../lib-header/string.h"
 
-
+// Global variable, defining position of row and column of the cursor
 int current_framebuffer_pos_row = 0;
 int current_framebuffer_pos_col = 0;
 
@@ -37,6 +37,7 @@ struct events {
 static struct events pressed;
 static struct KeyboardDriverState keyboard_state; 
 
+// ASCII Map when shift pressed (urut, misal shift + 1 = !)
 const char shift_map[] = {
     0, 0x1B, '!', '@', '#', '$', '%', '^',  '&', '*', '(',  ')',  '_', '+', '\b', '\t',
     'Q',  'W', 'E', 'R', 'T', 'Y', 'U', 'I',  'O', 'P', '{',  '}', '\n',   0,  'A',  'S',
@@ -90,7 +91,7 @@ void keyboard_isr(void) {
         switch (scancode) {
             // capslock
             case 0x3a:
-                keyboard_state.capslock = keyboard_state.capslock ^ true; // check apakah capslock kondisi always on atau off
+                keyboard_state.capslock = !keyboard_state.capslock; // check apakah capslock kondisi always on atau off
                 break;
             // press shift left
             case 0x2a:
@@ -188,5 +189,4 @@ void keyboard_isr(void) {
         }
     framebuffer_set_cursor(current_framebuffer_pos_row, current_framebuffer_pos_col);}
     pic_ack(IRQ_KEYBOARD);
-    // / TODO : Implement scancode processing
 }
