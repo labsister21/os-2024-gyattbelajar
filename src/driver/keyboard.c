@@ -134,7 +134,7 @@ void keyboard_isr(void) {
                 if (keyboard_state.current_index > 0) {
                     // Sudah di ujung paling kiri
                     if (current_framebuffer_pos_col == 0) {
-                        framebuffer_set_cursor(current_framebuffer_pos_row, current_framebuffer_pos_col);
+                        framebuffer_set_cursor(current_framebuffer_pos_row-1, COLUMN);
                         pic_ack(IRQ_KEYBOARD);
                         return;
                     }

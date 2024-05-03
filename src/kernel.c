@@ -42,11 +42,11 @@ void kernel_setup(void) {
         
     // int col = 0;
     keyboard_state_activate();
-    /*
+    
     struct BlockBuffer b;
     for (int i = 0; i < 512; i++) b.buf[i] = i % 16;
     write_blocks(&b, 17, 1);
-    */
+    
     while (true) {
         keyboard_state_activate();
         //  char c;
