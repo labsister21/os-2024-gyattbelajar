@@ -98,10 +98,10 @@ void kernel_setup(void) {
     set_tss_kernel_current_stack();
     kernel_execute_user_program((uint8_t*) 0);
     
-    while (true) {
-        keyboard_state_activate();
+    while (true) ;
+        // keyboard_state_activate();
         //  char c;
         //  get_keyboard_buffer(&c);
         //  if (c) framebuffer_write(0, col++, c, 0xF, 0);
-    }
+    
 }

@@ -134,7 +134,11 @@ void keyboard_isr(void) {
                 if (keyboard_state.current_index > 0) {
                     // Sudah di ujung paling kiri
                     if (current_framebuffer_pos_col == 0) {
-                        framebuffer_set_cursor(current_framebuffer_pos_row-1, COLUMN);
+                        keyboard_state.current_index--;
+                        keyboard_state.keyboard_buffer[keyboard_state.current_index] = ' ';
+                        current_framebuffer_pos_col = COLUMN - 1;
+                        current_framebuffer_pos_row--;
+                        framebuffer_write(current_framebuffer_pos_row, current_framebuffer_pos_col, ' ', 0xFF, 0);
                         pic_ack(IRQ_KEYBOARD);
                         return;
                     }
@@ -158,10 +162,10 @@ void keyboard_isr(void) {
             else if (converted == '\n') {
                 memset(keyboard_state.keyboard_buffer, '\0', sizeof(keyboard_state.keyboard_buffer));
                 keyboard_state.current_index = 0;
-                keyboard_state.keyboard_input_on = 0;
+                keyboard_state.keyboard_input_on = 1;
                 current_framebuffer_pos_row++;
                 current_framebuffer_pos_col = 0;
-                framebuffer_write(current_framebuffer_pos_row, current_framebuffer_pos_col, '\0', 0x0, 0);
+                framebuffer_write(current_framebuffer_pos_row, current_framebuffer_pos_col, ' ', 0xFF, 0);
                 framebuffer_set_cursor(current_framebuffer_pos_row, current_framebuffer_pos_col);
                 pic_ack(IRQ_KEYBOARD);
                 return;
