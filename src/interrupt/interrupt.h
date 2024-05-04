@@ -125,7 +125,6 @@ struct InterruptFrame {
     struct InterruptStack int_stack;
 } __attribute__((packed));
 
-extern struct TSSEntry _interrupt_tss_entry;
 
 /**
  * TSSEntry, Task State Segment. Used when jumping back to ring 0 / kernel
@@ -137,6 +136,9 @@ struct TSSEntry {
     // Unused variables
     uint32_t unused_register[23];
 } __attribute__((packed));
+
+
+extern struct TSSEntry _interrupt_tss_entry;
 
 // Set kernel stack in TSS
 void set_tss_kernel_current_stack(void);

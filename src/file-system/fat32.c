@@ -4,7 +4,7 @@
 #include "../lib-header/string.h"
 #include "fat32.h"
 
-const Directory_Table_Size = (CLUSTER_SIZE / sizeof(struct FAT32DirectoryEntry));
+const int Directory_Table_Size = (CLUSTER_SIZE / sizeof(struct FAT32DirectoryEntry));
 
 const uint8_t fs_signature[BLOCK_SIZE] = {
     'C', 'o', 'u', 'r', 's', 'e', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',  ' ',
@@ -110,6 +110,7 @@ int8_t read_directory(struct FAT32DriverRequest request){
     if(!folderFound){
         return 2;
     }
+    return 2;
 }
 
 int8_t read(struct FAT32DriverRequest request){
@@ -151,6 +152,7 @@ int8_t read(struct FAT32DriverRequest request){
     if(!fileFound){
         return 3;
     }
+    return 3;
 }
 
 int8_t write(struct FAT32DriverRequest request){
@@ -277,7 +279,7 @@ int8_t delete(struct FAT32DriverRequest request){
                 // If entry is a directory
                 struct FAT32DirectoryTable dt;
                 read_clusters(&dt, entries[i].cluster_low, 1);
-                for (unsigned int j=1; j < Directory_Table_Size; j++){
+                for (int j=1; j < Directory_Table_Size; j++){
                     if (dt.table[j].user_attribute == UATTR_NOT_EMPTY){
 
                         // Directory is not empty, return non empty error

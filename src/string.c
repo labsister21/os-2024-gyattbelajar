@@ -43,3 +43,24 @@ void *memmove(void *dest, const void *src, size_t n) {
 
     return dest;
 }
+
+int strcmp(const char *stringA, char *stringB, int size) {
+    int i;
+    for (i = 0; i < size && stringA[i] == stringB[i]; i++) {
+        if (stringA[i] == '\0') {
+            return 0;
+        }
+    }
+    if (i == size) {
+        return 0;
+    }
+    return stringA[i] == stringB[i];
+}
+
+int max(uint16_t a, uint16_t b) {
+    if (a > b) {
+        return a;
+    } else {
+        return b;
+    }
+}

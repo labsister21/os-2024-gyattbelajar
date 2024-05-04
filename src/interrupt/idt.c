@@ -26,14 +26,16 @@ void initialize_idt(void) {
     __asm__ volatile("sti");
 
     for (int i = 0; i < ISR_STUB_TABLE_LIMIT; i++) {
-        uint8_t priv;
-        if (i < 0x30 || i > 0x3F) {
-            priv = 0;
-        }
-        else {
-            priv = 0x3;
-        }
-        set_interrupt_gate(i, isr_stub_table[i], GDT_KERNEL_CODE_SEGMENT_SELECTOR, priv);
+        __asm__ volatile("lidt %0"
+                     :
+                     : "m"(_idt_idtr));
+    __asm__ volatile("sti");
+
+    for (int i = 0; i < ISR_STUB_TABLE_LIMIT; i++)
+    {
+        uint8_t privilege = i < 0x30 || i > 0x3F ? 0 : 0x3;
+        set_interrupt_gate(i, isr_stub_table[i], GDT_KERNEL_CODE_SEGMENT_SELECTOR, privilege);
+    }
     }
 }
 

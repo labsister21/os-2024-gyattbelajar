@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include "disk.h"
+#include "../lib-header/string.h"
 
 /**
  * FAT32 - IF2230 edition - 2024

@@ -12,6 +12,9 @@
         "stdint.h": "c",
         "interrupt.h": "c",
         "stddef.h": "c",
-        "fat32.h": "c"
+        "fat32.h": "c",
+        "idt.h": "c",
+        "keyboard.h": "c",
+        "portio.h": "c"
     },
 }

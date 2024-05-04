@@ -52,4 +52,18 @@ int memcmp(const void *s1, const void *s2, size_t n);
 */
 void *memmove(void *dest, const void *src, size_t n);
 
+/**
+ * @param char *stringA kata pertama
+ * @param char *stringB kata kedua
+ * @param int size ukuran yang akan dicek
+*/
+int strcmp(const char *stringA, char *stringB, int size);
+
+/**
+ * @param int a
+ * @param int b
+ * @return maximum antara a b
+*/
+int max(uint16_t a, uint16_t b);
+
 #endif
