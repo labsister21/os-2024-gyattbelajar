@@ -65,5 +65,7 @@ int strcmp(const char *stringA, char *stringB, int size);
  * @return maximum antara a b
 */
 int max(uint16_t a, uint16_t b);
+int max(uint16_t a, uint16_t b);
 
+int strcmp(const char *stringA, char *stringB, int size);
 #endif
