@@ -51,6 +51,7 @@ int memcmp(const void *s1, const void *s2, size_t n);
  * @return Pointer dest
 */
 void *memmove(void *dest, const void *src, size_t n);
+int max(uint16_t a, uint16_t b);
 
 /**
  * @param char *stringA kata pertama
