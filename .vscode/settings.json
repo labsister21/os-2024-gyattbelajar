@@ -15,6 +15,9 @@
         "fat32.h": "c",
         "idt.h": "c",
         "keyboard.h": "c",
-        "portio.h": "c"
+        "portio.h": "c",
+        "iosfwd": "c",
+        "limits": "c",
+        "streambuf": "c"
     },
 }

@@ -51,7 +51,6 @@ int memcmp(const void *s1, const void *s2, size_t n);
  * @return Pointer dest
 */
 void *memmove(void *dest, const void *src, size_t n);
-int max(uint16_t a, uint16_t b);
 
 /**
  * @param char *stringA kata pertama
@@ -66,7 +65,12 @@ int strcmp(const char *stringA, char *stringB, int size);
  * @return maximum antara a b
 */
 int max(uint16_t a, uint16_t b);
-int max(uint16_t a, uint16_t b);
+
+/**
+ * @param char* string
+ * @return length of string
+*/
+size_t strlen(char* string);
 
 int strcmp(const char *stringA, char *stringB, int size);
 #endif

@@ -64,3 +64,11 @@ int max(uint16_t a, uint16_t b) {
         return b;
     }
 }
+
+size_t strlen(char* string) {
+    size_t len = 0;
+    while (string[len] != '\0') {
+        len++;
+    }
+    return len;
+}

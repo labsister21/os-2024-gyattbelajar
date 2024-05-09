@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include "../file-system/fat32.h"
+#include "../lib-header/keyboard.h"
 
 /* -- PIC constants -- */
 
@@ -172,5 +174,7 @@ void pic_remap(void);
  * @param frame Information about CPU during interrupt is raised
  */
 void main_interrupt_handler(struct InterruptFrame frame);
+
+void syscall(struct InterruptFrame frame);
 
 #endif

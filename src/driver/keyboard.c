@@ -3,9 +3,6 @@
 #include "../lib-header/portio.h"
 #include "../lib-header/string.h"
 
-// Global variable, defining position of row and column of the cursor
-int current_framebuffer_pos_row = 0;
-int current_framebuffer_pos_col = 0;
 
 
 const char keyboard_scancode_1_to_ascii_map[256] = {
@@ -78,6 +75,9 @@ bool shift_pressed() {
     return keyboard_state.shift_left || keyboard_state.shift_right;
 }
 
+bool is_keyboard_input_on() {
+    return keyboard_state.keyboard_input_on;
+}
 
 void keyboard_isr(void) {
     uint8_t scancode = in(KEYBOARD_DATA_PORT);
@@ -133,24 +133,30 @@ void keyboard_isr(void) {
                 // Cek apakah ada karakter lain pada keyboard_buffer
                 if (keyboard_state.current_index > 0) {
                     // Sudah di ujung paling kiri
-                    if (current_framebuffer_pos_col == 0) {
-                        framebuffer_set_cursor(current_framebuffer_pos_row-1, COLUMN);
+                    if (framebuffer_state.col == 0) {
+                        keyboard_state.current_index--;
+                        keyboard_state.keyboard_buffer[keyboard_state.current_index] = ' ';
+                        framebuffer_state.col = COLUMN - 1;
+                        framebuffer_state.row--;
+                        framebuffer_write(framebuffer_state.row, framebuffer_state.col, ' ', 0xFF, 0);
+                    if (framebuffer_state.col == 0) {
+                        framebuffer_set_cursor(framebuffer_state.row-1, COLUMN);
                         pic_ack(IRQ_KEYBOARD);
                         return;
                     }
                     // normal backspace
                     else {
                         keyboard_state.current_index--;
-                        current_framebuffer_pos_col--;
+                        framebuffer_state.col--;
                         keyboard_state.keyboard_buffer[keyboard_state.current_index] = ' '; // Hilangkan karakter jadi kosong (spasi)
-                        framebuffer_write(current_framebuffer_pos_row, current_framebuffer_pos_col, ' ', 0xFF, 0);
+                        framebuffer_write(framebuffer_state.row, framebuffer_state.col, ' ', 0xFF, 0);
                     }
                 }
                 // Character sudah habis
                 else {
-                    current_framebuffer_pos_col = 0;
+                    framebuffer_state.col = 0;
                 }
-                framebuffer_set_cursor(current_framebuffer_pos_row, current_framebuffer_pos_col);
+                framebuffer_set_cursor(framebuffer_state.row, framebuffer_state.col);
                 pic_ack(IRQ_KEYBOARD);
                 return;
             }
@@ -158,11 +164,11 @@ void keyboard_isr(void) {
             else if (converted == '\n') {
                 memset(keyboard_state.keyboard_buffer, '\0', sizeof(keyboard_state.keyboard_buffer));
                 keyboard_state.current_index = 0;
-                keyboard_state.keyboard_input_on = 0;
-                current_framebuffer_pos_row++;
-                current_framebuffer_pos_col = 0;
-                framebuffer_write(current_framebuffer_pos_row, current_framebuffer_pos_col, '\0', 0x0, 0);
-                framebuffer_set_cursor(current_framebuffer_pos_row, current_framebuffer_pos_col);
+                keyboard_state.keyboard_input_on = 1;
+                framebuffer_state.row++;
+                framebuffer_state.col = 0;
+                framebuffer_write(framebuffer_state.row, framebuffer_state.col, ' ', 0xFF, 0);
+                framebuffer_set_cursor(framebuffer_state.row, framebuffer_state.col);
                 pic_ack(IRQ_KEYBOARD);
                 return;
             }
@@ -180,13 +186,17 @@ void keyboard_isr(void) {
                 keyboard_state.current_index++;
             }
 
-            if (current_framebuffer_pos_col >= COLUMN) {
-                current_framebuffer_pos_row++;
-                current_framebuffer_pos_col = 0;
+            if (framebuffer_state.col >= COLUMN) {
+                framebuffer_state.row++;
+                framebuffer_state.col = 0;
             }
-            framebuffer_write(current_framebuffer_pos_row, current_framebuffer_pos_col, converted, 0xFF, 0);
-            current_framebuffer_pos_col++;
+            framebuffer_write(framebuffer_state.row, framebuffer_state.col, converted, 0xFF, 0);
+            framebuffer_state.col++;
         }
-    framebuffer_set_cursor(current_framebuffer_pos_row, current_framebuffer_pos_col);}
+    if (framebuffer_state.row >= ROW - 1) {
+        scrollDown();
+    }
+    framebuffer_set_cursor(framebuffer_state.row, framebuffer_state.col);}
     pic_ack(IRQ_KEYBOARD);
+}
 }

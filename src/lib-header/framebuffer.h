@@ -12,6 +12,14 @@
 #define COLUMN 80
 #define ROW 25
 
+struct Framebuffer {
+    int row;
+    int col;
+    int start_row;
+    int start_col;
+} __attribute((packed));
+
+extern struct Framebuffer framebuffer_state;
 
 /**
  * Terminal framebuffer
@@ -48,5 +56,13 @@ void framebuffer_set_cursor(uint8_t r, uint8_t c);
  *
  */
 void framebuffer_clear(void);
+
+void putchar(char c, uint32_t color);
+
+void clear_screen();
+
+void puts(const char* string, uint32_t count, uint32_t color);
+
+void scrollDown();
 
 #endif

@@ -64,7 +64,8 @@ struct GlobalDescriptorTable global_descriptor_table = {
             .available_bit = 0,
             .code_in_64 = 0,
             .db_flag = 1,
-            .granularity = 0,
+            .granularity = 1,
+            .base_high = 0,
         },
         { // user data descriptor
             .segment_low = 0xFFFF,
@@ -82,18 +83,19 @@ struct GlobalDescriptorTable global_descriptor_table = {
             .base_high = 0,
         },
         { // TSS
-            .segment_high      = (sizeof(struct TSSEntry) & (0xF << 16)) >> 16,
             .segment_low       = sizeof(struct TSSEntry),
-            .base_high         = 0,
-            .base_mid          = 0,
             .base_low          = 0,
-            .non_system        = 0,    // S bit
+            .base_mid          = 0,
             .type_bit          = 0x9,
+            .non_system        = 0,    // S bit
             .dpl_privilege     = 0,    // DPL
             .present           = 1,    // P bit
-            .db_flag          = 1,    // D/B bit
+            .segment_high      = (sizeof(struct TSSEntry) & (0xF << 16)) >> 16,
+            .available_bit     = 0,
             .code_in_64         = 0,    // L bit
+            .db_flag          = 1,    // D/B bit
             .granularity       = 0,    // G bit
+            .base_high         = 0,
         },
         {0}
         }
