@@ -35,18 +35,16 @@ int main(void) {
     };
     int32_t retcode;
     syscall(0, (uint32_t) &request, (uint32_t) &retcode, 0);
-    syscall(7, 0, 0, 0);
-    if (retcode == 0) {
-        syscall(4, (uint32_t) "owo\n", 0, 0);
+    if (retcode == 0)
         syscall(6, (uint32_t) "owo\n", 4, 0xF);
-    }
-    syscall(4, (uint32_t) "owo\n", 0, 0);
-    syscall(5, (uint32_t) "a", 1, 0xF);
-    char buf;
-    while (true) {
-        syscall(4, (uint32_t) &buf, 0, 0);
-        syscall(6, (uint32_t) &buf, 0xF, 0);
-    }
+
+    // char buf;
+    syscall(7, 0, 0, 0);
+    // while (true) {
+    //     syscall(4, (uint32_t) &buf, 0, 0);
+    //     syscall(5, (uint32_t) &buf, 0xF, 0);
+    // }
 
     return 0;
 }
+

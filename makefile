@@ -54,7 +54,7 @@ kernel:
 	@echo Linking object files and generate elf32...
 	@rm -f *.o
 
-iso: kernel disk insert-shell
+iso: kernel
 	@mkdir -p $(OUTPUT_FOLDER)/iso/boot/grub
 	@cp $(OUTPUT_FOLDER)/kernel     $(OUTPUT_FOLDER)/iso/boot/
 	@cp other/grub1                 $(OUTPUT_FOLDER)/iso/boot/grub/
@@ -85,4 +85,4 @@ user-shell:
 
 insert-shell: inserter user-shell
 	@echo Inserting shell into root directory...
-	 @cd $(OUTPUT_FOLDER); ./inserter shell 1 $(DISK_NAME).bin
+	@cd $(OUTPUT_FOLDER); ./inserter shell 2 $(DISK_NAME).bin
