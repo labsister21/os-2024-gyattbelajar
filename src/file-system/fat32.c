@@ -138,7 +138,10 @@ int8_t read(struct FAT32DriverRequest request){
             }
 
             // Request buffer can be loaded
-            uint16_t numCluster = entries[i].filesize / CLUSTER_SIZE + 1;
+            uint16_t numCluster = (entries[i].filesize / CLUSTER_SIZE) + 1;
+            if (entries[i].filesize % CLUSTER_SIZE == 0){
+                numCluster--;
+            }
             uint16_t clusterRead = entries[i].cluster_low;
             for (uint16_t index=0; index<numCluster; index++){
                 read_clusters(index * CLUSTER_SIZE + request.buf, clusterRead, 1);
@@ -158,8 +161,7 @@ int8_t read(struct FAT32DriverRequest request){
 int8_t write(struct FAT32DriverRequest request){
 
     // if parent cluster isn't valid
-    if (fileSystem.fat_table.cluster_map[request.parent_cluster_number] != FAT32_FAT_END_OF_FILE)
-    {
+    if (fileSystem.fat_table.cluster_map[request.parent_cluster_number] != FAT32_FAT_END_OF_FILE){
         return 2;
     }
 
@@ -167,8 +169,10 @@ int8_t write(struct FAT32DriverRequest request){
     read_clusters(&fileSystem.dir_table_buf, request.parent_cluster_number, 1);
 
     struct FAT32DirectoryEntry *entries = fileSystem.dir_table_buf.table;
-    uint16_t numCluster = request.buffer_size / CLUSTER_SIZE + 1;
-
+    uint16_t numCluster = (request.buffer_size / CLUSTER_SIZE) + 1;
+    if (request.buffer_size % CLUSTER_SIZE == 0){
+        numCluster--;
+    }
     numCluster = max(numCluster, 1);
 
     uint16_t numClusterFound = 0;
@@ -313,7 +317,10 @@ int8_t delete(struct FAT32DriverRequest request){
                     write_clusters(&fileSystem.dir_table_buf, request.parent_cluster_number, 1);
 
                     // Prepare for deleting file content
-                    uint16_t numCluster = entries[i].filesize / CLUSTER_SIZE + 1;
+                    uint16_t numCluster = (entries[i].filesize / CLUSTER_SIZE) + 1;
+                    if (entries[i].filesize % CLUSTER_SIZE == 0){
+                        numCluster--;
+                    }
                     uint16_t toZeros[numCluster];
                     uint16_t currCluster = entries[i].cluster_low;
 

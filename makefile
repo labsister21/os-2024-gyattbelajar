@@ -23,7 +23,7 @@ LFLAGS        = -T $(SOURCE_FOLDER)/linker.ld -melf_i386
 DISK_NAME      = storage
 
 run: all
-	@qemu-system-i386 -s -S -drive file=$(OUTPUT_FOLDER)/$(STORAGE_FILE).bin,format=raw,if=ide,index=0,media=disk -cdrom $(OUTPUT_FOLDER)/$(ISO_NAME).iso
+	@qemu-system-i386 -m 128M -drive file=$(OUTPUT_FOLDER)/$(STORAGE_FILE).bin,format=raw,if=ide,index=0,media=disk -s -S -cdrom $(OUTPUT_FOLDER)/$(ISO_NAME).iso
 all: build
 build: iso
 clean:
@@ -85,4 +85,4 @@ user-shell:
 
 insert-shell: inserter user-shell
 	@echo Inserting shell into root directory...
-	 @cd $(OUTPUT_FOLDER); ./inserter shell 2 $(DISK_NAME).bin
+	 @cd $(OUTPUT_FOLDER); ./inserter shell 1 $(DISK_NAME).bin

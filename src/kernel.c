@@ -84,7 +84,6 @@ void kernel_setup(void) {
     set_tss_register();
 
     paging_allocate_user_page_frame(&_paging_kernel_page_directory, (uint8_t*) 0);
-    
 // Write shell into memory
     
     // write()

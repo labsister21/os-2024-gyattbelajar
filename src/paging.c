@@ -25,8 +25,8 @@ static struct PageManagerState page_manager_state = {
         [0]                            = true,
         [1 ... PAGE_FRAME_MAX_COUNT-1] = false
     },
-    .free_page_frame_count = PAGE_FRAME_MAX_COUNT,
-    .physical_addr_pointr = (uint8_t *)0 + PAGE_FRAME_SIZE
+    .free_page_frame_count = PAGE_FRAME_MAX_COUNT - 1,
+    .physical_addr_pointr = (uint8_t *)0
 };
 
 void update_page_directory_entry(
@@ -90,7 +90,7 @@ bool paging_allocate_user_page_frame(struct PageDirectory *page_dir, void *virtu
             .use_pagesize_4_mb = true,
         };
         
-        uint32_t physical_addr = (uint32_t) page_manager_state.physical_addr_pointr + (i+1) * PAGE_FRAME_SIZE;
+        uint32_t physical_addr = (uint32_t) page_manager_state.physical_addr_pointr + (i * PAGE_FRAME_SIZE);
         update_page_directory_entry(
             page_dir, 
             (void *) physical_addr,
