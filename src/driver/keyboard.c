@@ -132,6 +132,10 @@ void keyboard_isr(void) {
         // backspace
         else {
             if (converted == '\b') {
+                if (framebuffer_state.col <= keyboard_state.start_col) {
+                    pic_ack(IRQ_KEYBOARD);
+                    return;
+                }
                 // Cek apakah ada karakter lain pada keyboard_buffer
                 if (keyboard_state.current_index > 0) {
                     // Sudah di ujung paling kiri

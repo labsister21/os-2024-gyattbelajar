@@ -44,6 +44,7 @@ struct KeyboardDriverState {
     bool still_typing;
     uint16_t current_index;
     char current_char;
+    int start_col;
 } __attribute((packed));
 
 extern struct KeyboardDriverState keyboard_state;

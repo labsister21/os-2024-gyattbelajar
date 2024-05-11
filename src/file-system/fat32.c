@@ -165,7 +165,7 @@ int8_t write(struct FAT32DriverRequest request){
         return 2;
     }
 
-    // read the parent cluster into dir_table_buf
+    // read the parent cx`luster into dir_table_buf
     read_clusters(&fileSystem.dir_table_buf, request.parent_cluster_number, 1);
 
     struct FAT32DirectoryEntry *entries = fileSystem.dir_table_buf.table;

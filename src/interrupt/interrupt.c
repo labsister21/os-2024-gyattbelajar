@@ -85,6 +85,7 @@ void syscall(struct InterruptFrame frame) {
         case 4:
             // get_keyboard_buffer((char*) frame.cpu.general.ebx);
             // keyboard_isr();
+            keyboard_state.start_col = frame.cpu.general.ecx;
             keyboard_state_activate();
             __asm__("sti"); // Due IRQ is disabled when main_interrupt_handler() called
             while (is_keyboard_input_on());

@@ -18,6 +18,9 @@
         "portio.h": "c",
         "iosfwd": "c",
         "limits": "c",
-        "streambuf": "c"
+        "streambuf": "c",
+        "user-shell.h": "c",
+        "ls.h": "c",
+        "disk.h": "c"
     },
 }

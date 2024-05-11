@@ -5,8 +5,11 @@
 
 struct CursorPosition CP = {
     .current_length = 0,
+    .start_col = 0,
 };
 
+uint32_t current_directory;
+struct FAT32DirectoryTable dir_table;
 
 void syscall(uint32_t eax, uint32_t ebx, uint32_t ecx, uint32_t edx) {
     __asm__ volatile("mov %0, %%ebx" : /* <Empty> */ : "r"(ebx));
@@ -22,6 +25,7 @@ void syscall(uint32_t eax, uint32_t ebx, uint32_t ecx, uint32_t edx) {
 void put_template() {
     syscall(6, (uint32_t) "MewingDulu", 11, BIOS_LIGHT_BLUE);
     syscall(6, (uint32_t) "$ ", 3, BIOS_LIGHT_GREEN);
+    CP.start_col = 12;
 }
 
 void put_template_with_path(char* path) {
@@ -29,6 +33,7 @@ void put_template_with_path(char* path) {
     syscall(6, (uint32_t) "MewingDulu", 11, BIOS_LIGHT_BLUE);
     syscall(6, (uint32_t) path, len, BIOS_LIGHT_BLUE);
     syscall(6, (uint32_t) "$ ", 3, BIOS_LIGHT_GREEN);
+    CP.start_col = 12 + len - 1;
 }
 
 
@@ -47,9 +52,10 @@ int main(void) {
         put_template();
 
     syscall(7, 0, 0, 0);
+    print_directory();
     char c[2048];
     while (true) {
-        syscall(4, (uint32_t) &c, 0, 0); // Get char from keyboard
+        syscall(4, (uint32_t) &c, (uint32_t) CP.start_col, 0); // Get char from keyboard
         // syscall(5, (uint32_t) c, 0xF, 0); // Put char one by one
         
         if (strcmp((char*)c, "ls", strlen("ls")) == 0) {

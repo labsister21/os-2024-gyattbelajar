@@ -1,4 +1,6 @@
 #include <stdint.h>
+#include "ls.h"
+#include "../file-system/fat32.h"
 
 // definisi warna
 #define BIOS_LIGHT_GREEN 0b1010
@@ -17,9 +19,13 @@ struct CursorPosition {
     char buffer[2048]; // char buffer, input
     int current_length; // current length of text, initially 0
     char current_char;
+    int start_col;
 };
 
 extern struct CursorPosition CP;
+
+extern uint32_t current_directory;
+extern struct FAT32DirectoryTable dir_table;
 
 // syscall ke interrupt
 void syscall(uint32_t eax, uint32_t ebx, uint32_t ecx, uint32_t edx);
