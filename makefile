@@ -24,8 +24,8 @@ DISK_NAME      = storage
 
 run: all
 	@qemu-system-i386 -m 128M -drive file=$(OUTPUT_FOLDER)/$(STORAGE_FILE).bin,format=raw,if=ide,index=0,media=disk -s -S -cdrom $(OUTPUT_FOLDER)/$(ISO_NAME).iso
-all: build
-build: iso
+all: disk iso insert-shell
+build: disk iso insert-shell
 clean:
 	rm -rf *.o *.iso $(OUTPUT_FOLDER)/kernel
 

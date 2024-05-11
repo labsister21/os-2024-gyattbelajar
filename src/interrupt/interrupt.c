@@ -83,10 +83,21 @@ void syscall(struct InterruptFrame frame) {
                 *(struct FAT32DriverRequest*) frame.cpu.general.ebx);
             break;
         case 4:
-            get_keyboard_buffer((char*) frame.cpu.general.ebx);
+            // get_keyboard_buffer((char*) frame.cpu.general.ebx);
+            // keyboard_isr();
+            keyboard_state_activate();
+            __asm__("sti"); // Due IRQ is disabled when main_interrupt_handler() called
+            while (is_keyboard_input_on());
+            // char buf[KEYBOARD_BUFFER_SIZE];
+            // get_keyboard_buffer(buf);
+            // char c;
+            // get_current_char(&c);
+            memcpy((char *) frame.cpu.general.ebx, keyboard_state.keyboard_buffer, KEYBOARD_BUFFER_SIZE);
+            // memcpy((char *) frame.cpu.general.ebx, &c, 1);
+            keyboard_state_deactivate();
             break;
         case 5:
-            putchar(frame.cpu.general.ebx, frame.cpu.general.ecx);
+            putchar((char)(frame.cpu.general.ebx), frame.cpu.general.ecx);
             break;
         case 6:
             puts(

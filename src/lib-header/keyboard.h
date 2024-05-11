@@ -15,7 +15,7 @@
 #define KEYBOARD_DATA_PORT     0x60
 #define EXTENDED_SCANCODE_BYTE 0xE0
 
-#define KEYBOARD_BUFFER_SIZE   500
+#define KEYBOARD_BUFFER_SIZE   2048
 /**
  * keyboard_scancode_1_to_ascii_map[256], Convert scancode values that correspond to ASCII printables
  * How to use this array: ascii_char = k[scancode]
@@ -41,9 +41,12 @@ struct KeyboardDriverState {
     bool ctrl;
     bool ctrl_c;
     bool abort;
+    bool still_typing;
     uint16_t current_index;
+    char current_char;
 } __attribute((packed));
 
+extern struct KeyboardDriverState keyboard_state;
 
 /* -- Driver Interfaces -- */
 

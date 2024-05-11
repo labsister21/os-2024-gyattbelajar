@@ -10,7 +10,7 @@ struct Framebuffer framebuffer_state = {
 void framebuffer_set_cursor(uint8_t r, uint8_t c) {
     uint16_t pos = r * COLUMN + c;
  
-	out(0x3D4, 0x0F);
+ 	out(0x3D4, 0x0F);
 	out(0x3D5, (uint8_t) (pos & 0xFF));
 	out(0x3D4, 0x0E);
 	out(0x3D5, (uint8_t) ((pos >> 8) & 0xFF));
@@ -35,6 +35,9 @@ void framebuffer_clear(void) {
 }
 
 void putchar(char c, uint32_t color) {
+    if (c == '\0') {
+        return;
+    }
     if (c != '\n') {
         framebuffer_write(framebuffer_state.row, framebuffer_state.col, c, color, 0);
     }
@@ -44,9 +47,11 @@ void putchar(char c, uint32_t color) {
         if (framebuffer_state.row == ROW) {
             scrollDown();
         }
+        framebuffer_write(framebuffer_state.row, framebuffer_state.col, ' ', color, 0);
     } else {
         framebuffer_state.col++;
     }
+    framebuffer_set_cursor(framebuffer_state.row, framebuffer_state.col);
 }
 
 void clear_screen() {
@@ -70,4 +75,5 @@ void scrollDown() {
     for (int i = 0; i < COLUMN; i++) {
         framebuffer_write(framebuffer_state.row, i, ' ', 0xF, 0);
     }
+    framebuffer_set_cursor(framebuffer_state.row, framebuffer_state.col);
 }

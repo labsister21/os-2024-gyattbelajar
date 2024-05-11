@@ -4,7 +4,6 @@
 #include "../lib-header/string.h"
 
 
-
 const char keyboard_scancode_1_to_ascii_map[256] = {
       0, 0x1B, '1', '2', '3', '4', '5', '6',  '7', '8', '9',  '0',  '-', '=', '\b', '\t',
     'q',  'w', 'e', 'r', 't', 'y', 'u', 'i',  'o', 'p', '[',  ']', '\n',   0,  'a',  's',
@@ -32,7 +31,7 @@ struct events {
 
 
 static struct events pressed;
-static struct KeyboardDriverState keyboard_state; 
+struct KeyboardDriverState keyboard_state; 
 
 // ASCII Map when shift pressed (urut, misal shift + 1 = !)
 const char shift_map[] = {
@@ -57,19 +56,20 @@ const char shift_map[] = {
 
 // Activate keyboard ISR / start listen keyboard & save to buffer
 void keyboard_state_activate(void) {
-        keyboard_state.keyboard_input_on = true;
+    activate_keyboard_interrupt();
+    keyboard_state.keyboard_input_on = true;
 }
 
 // Deactivate keyboard ISR / stop listening keyboard interrupt
 void keyboard_state_deactivate(void) {
-        keyboard_state.keyboard_input_on = false;
-    
+    keyboard_state.keyboard_input_on = false;
 }
 
 // Get keyboard buffer value and flush the buffer - @param buf Pointer to char buffer
 void get_keyboard_buffer(char *buf) {
     memcpy(buf, keyboard_state.keyboard_buffer, KEYBOARD_BUFFER_SIZE);
 }
+
 
 bool shift_pressed() {
     return keyboard_state.shift_left || keyboard_state.shift_right;
@@ -122,6 +122,8 @@ void keyboard_isr(void) {
             // alt, fx
         }
         char converted = keyboard_scancode_1_to_ascii_map[scancode];
+        keyboard_state.current_char = converted;
+        // TODO implement ctrl + c
 
         if (converted == 0) {
             pic_ack(IRQ_KEYBOARD);
@@ -139,7 +141,6 @@ void keyboard_isr(void) {
                         framebuffer_state.col = COLUMN - 1;
                         framebuffer_state.row--;
                         framebuffer_write(framebuffer_state.row, framebuffer_state.col, ' ', 0xFF, 0);
-                    if (framebuffer_state.col == 0) {
                         framebuffer_set_cursor(framebuffer_state.row-1, COLUMN);
                         pic_ack(IRQ_KEYBOARD);
                         return;
@@ -150,6 +151,9 @@ void keyboard_isr(void) {
                         framebuffer_state.col--;
                         keyboard_state.keyboard_buffer[keyboard_state.current_index] = ' '; // Hilangkan karakter jadi kosong (spasi)
                         framebuffer_write(framebuffer_state.row, framebuffer_state.col, ' ', 0xFF, 0);
+                        framebuffer_set_cursor(framebuffer_state.row, framebuffer_state.col);
+                        pic_ack(IRQ_KEYBOARD);
+                        return;
                     }
                 }
                 // Character sudah habis
@@ -162,7 +166,8 @@ void keyboard_isr(void) {
             }
             // new line
             else if (converted == '\n') {
-                memset(keyboard_state.keyboard_buffer, '\0', sizeof(keyboard_state.keyboard_buffer));
+                keyboard_state_deactivate();
+                // memset(keyboard_state.keyboard_buffer, '\0', sizeof(keyboard_state.keyboard_buffer));
                 keyboard_state.current_index = 0;
                 keyboard_state.keyboard_input_on = 1;
                 framebuffer_state.row++;
@@ -170,6 +175,10 @@ void keyboard_isr(void) {
                 framebuffer_write(framebuffer_state.row, framebuffer_state.col, ' ', 0xFF, 0);
                 framebuffer_set_cursor(framebuffer_state.row, framebuffer_state.col);
                 pic_ack(IRQ_KEYBOARD);
+                if (framebuffer_state.row >= ROW - 1) {
+                    scrollDown();
+                }
+                keyboard_state_deactivate();
                 return;
             }
             else {
@@ -186,17 +195,16 @@ void keyboard_isr(void) {
                 keyboard_state.current_index++;
             }
 
-            if (framebuffer_state.col >= COLUMN) {
-                framebuffer_state.row++;
-                framebuffer_state.col = 0;
-            }
-            framebuffer_write(framebuffer_state.row, framebuffer_state.col, converted, 0xFF, 0);
-            framebuffer_state.col++;
         }
+    framebuffer_write(framebuffer_state.row, framebuffer_state.col, converted, 0xFF, 0);
+    framebuffer_state.col++;
+    if (framebuffer_state.col >= COLUMN) {
+        framebuffer_state.row++;
+        framebuffer_state.col = 0;
+    }
     if (framebuffer_state.row >= ROW - 1) {
         scrollDown();
     }
     framebuffer_set_cursor(framebuffer_state.row, framebuffer_state.col);}
     pic_ack(IRQ_KEYBOARD);
-}
 }

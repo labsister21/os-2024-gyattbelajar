@@ -57,6 +57,16 @@ int strcmp(const char *stringA, char *stringB, int size) {
     return stringA[i] - stringB[i];
 }
 
+int isEqual(const char *stringA, char *stringB, int size) {
+    int i;
+    for (i = 0; i < size; i++) {
+        if (stringA[i] != stringB[i]) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
 int max(uint16_t a, uint16_t b) {
     if (a > b) {
         return a;

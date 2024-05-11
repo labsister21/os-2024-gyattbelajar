@@ -72,5 +72,5 @@ int max(uint16_t a, uint16_t b);
 */
 size_t strlen(char* string);
 
-int strcmp(const char *stringA, char *stringB, int size);
+int isEqual(const char *stringA, char *stringB, int size);
 #endif
