@@ -11,6 +11,18 @@ struct CursorPosition CP = {
 uint32_t current_directory = ROOT_CLUSTER_NUMBER;
 struct FAT32DirectoryTable dir_table;
 
+/**
+ * System call to interupt
+ * 0 : read file
+ * 1 : read_directory
+ * 2 : write file / folder
+ * 3 : delete file / empty folder
+ * 4 : get keyboard input
+ * 5 : putchar
+ * 6 : putstring
+ * 7 : active keyboard state
+ * 8 : read cluster
+ */
 void syscall(uint32_t eax, uint32_t ebx, uint32_t ecx, uint32_t edx) {
     __asm__ volatile("mov %0, %%ebx" : /* <Empty> */ : "r"(ebx));
     __asm__ volatile("mov %0, %%ecx" : /* <Empty> */ : "r"(ecx));
@@ -34,6 +46,11 @@ void put_template_with_path(char* path) {
     syscall(6, (uint32_t) path, len, BIOS_LIGHT_BLUE);
     syscall(6, (uint32_t) "$ ", 3, BIOS_LIGHT_GREEN);
     CP.start_col = 12 + len - 1;
+}
+
+// Wrapper for syscall 6
+void put(char* buf, uint8_t color) {
+    syscall(6, (uint32_t) buf, strlen(buf), color);
 }
 
 int inputparse (char *input, char parsed_args[3][128]) {
@@ -63,46 +80,55 @@ int inputparse (char *input, char parsed_args[3][128]) {
     return nums;
 }
 
-int main(void) {
-    // Insert into shell
-    struct ClusterBuffer      cl[2]   = {0};
-    struct FAT32DriverRequest request = {
-        .buf                   = &cl,
-        .name                  = "shell",
-        .ext                   = "\0\0\0",
-        .parent_cluster_number = ROOT_CLUSTER_NUMBER,
-        .buffer_size           = CLUSTER_SIZE,
-    };
-    int32_t retcode;
-    syscall(0, (uint32_t) &request, (uint32_t) &retcode, 0);
-    if (retcode == 0)
-        put_template();
-    
-    // char path_str[128];
+void print_starting_screen(){
+    // Mewcrosoft ascii art
+    // put("$$$$$$\\$$$$\\  $$$$$$\\ $$\\  $$\\  $$\\ $$$$$$$\\ $$$$$$\\  $$$$$$\\  $$$$$$$\\ $$$$$$\\ $$ /  \\__$$$$$$\\   \n", BIOS_LIGHT_GREEN);
+    // put("$$  _$$  _$$\\$$  __$$\\$$ | $$ | $$ $$  _____$$  __$$\\$$  __$$\\$$  _____$$  __$$\\$$$$\\    \\_$$  _|  \n", BIOS_LIGHT_GREEN);
+    // put("$$ / $$ / $$ $$$$$$$$ $$ | $$ | $$ $$ /     $$ |  \\__$$ /  $$ \\$$$$$$\\ $$ /  $$ $$  _|     $$ |    \n", BIOS_LIGHT_GREEN);
+    // put("$$ | $$ | $$ $$   ____$$ | $$ | $$ $$ |     $$ |     $$ |  $$ |\\____$$\\$$ |  $$ $$ |       $$ |$$\\ \n", BIOS_LIGHT_GREEN);
+    // put("$$ | $$ | $$ \\$$$$$$$\\\\$$$$$\\$$$$  \\$$$$$$$\\$$ |     \\$$$$$$  $$$$$$$  \\$$$$$$  $$ |       \\$$$$  |\n", BIOS_LIGHT_GREEN);
+    // put("\\__| \\__| \\__|\\_______|\\_____|\\____/ \\_______\\__|      \\______/\\_______/ \\______/\\__|        \\____/ \n\n", BIOS_LIGHT_GREEN);
+}
 
+int main(void) {
+    // Buffer   
+    char args_val[2048];
+    // int args_info[128][2];
+    // char path_str[2048];
+
+
+    print_starting_screen();
+
+    // Activate keyboard
     syscall(7, 0, 0, 0);
-    char c[2048];
-    // char args[3][128];
+
+    // listeners
     while (true) {
-        syscall(4, (uint32_t) &c, (uint32_t) CP.start_col, 0); // Get char from keyboard
-        // syscall(5, (uint32_t) c, 0xF, 0); // Put char one by one
+        // Clear buffer
+        clear(args_val, 2048);
         
-        if (strcmp((char*)c, "ls", strlen("ls")) == 0) {
+        // add template
+        put_template();
+
+        // keyboard input
+        syscall(4, (uint32_t) args_val, 2048, 0x0);
+        
+        if (strcmp((char*)args_val, "ls", strlen("ls")) == 0) {
             print_directory();
-            syscall(6, (uint32_t) "Calling LS\n", 12, BIOS_RED);
+            put("\n", BIOS_RED);
         } else {
-            syscall(6, (uint32_t) "Command Tidak Ditemukan!\n", 26, BIOS_RED);
-        }
+            put("Command Tidak Ditemukan!\n", BIOS_RED);
+        }   
 
         // int num_args = inputparse(c, args);
         // if (num_args > 3){}
         
         // Clear all input buffer
-        clear(c, 2048);
+        
+        
         // clear(args[0], 128);
         // clear(args[1], 128);
         // clear(args[2], 128);
-        put_template();
     }
 
     return 0;

@@ -63,6 +63,18 @@ void pic_remap(void) {
 
 }
 
+/**
+ * System call 
+ * 0 : read file
+ * 1 : read_directory
+ * 2 : write file / folder
+ * 3 : delete file / empty folder
+ * 4 : get keyboard input
+ * 5 : putchar
+ * 6 : putstring
+ * 7 : active keyboard state
+ * 8 : read cluster
+ */
 void syscall(struct InterruptFrame frame) {
     switch (frame.cpu.general.eax) {
         case 0:

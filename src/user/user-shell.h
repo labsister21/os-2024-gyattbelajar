@@ -39,4 +39,8 @@ void put_template();
 // show template with path, pastikan path depannya ada /{path}
 void put_template_with_path(char* path);
 
-void get_command();
+// Wrapper for the base interrupt
+void put(char* buf, uint8_t color);
+
+// Print starting screen text
+void print_starting_screen();
