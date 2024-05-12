@@ -2,7 +2,7 @@
 #include "../file-system/fat32.h"
 #include "user-shell.h"
 
-void print_directory() {
+void ls() {
     int i;
     syscall(8, (uint32_t) &dir_table, 2, 1);
     for (i = 0; i < 63; i++) {
@@ -13,4 +13,5 @@ void print_directory() {
             break;
         }
     }
+    put("\n", BIOS_GREY);
 }

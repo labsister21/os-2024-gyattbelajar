@@ -74,6 +74,7 @@ void pic_remap(void) {
  * 6 : putstring
  * 7 : active keyboard state
  * 8 : read cluster
+ * 9 : clear screen
  */
 void syscall(struct InterruptFrame frame) {
     switch (frame.cpu.general.eax) {
@@ -118,6 +119,10 @@ void syscall(struct InterruptFrame frame) {
             break;
         case 8:
             read_clusters((struct FAT32DirectoryTable*) frame.cpu.general.ebx, frame.cpu.general.ecx, 1);
+            break;
+        case 9:
+            framebuffer_clear();
+            // TODO: reset keyboard position
             break;
     }
 }
