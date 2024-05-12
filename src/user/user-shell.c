@@ -35,8 +35,8 @@ void syscall(uint32_t eax, uint32_t ebx, uint32_t ecx, uint32_t edx) {
 
 
 void put_template() {
-    syscall(6, (uint32_t) "MewingDulu", 11, BIOS_LIGHT_BLUE);
-    syscall(6, (uint32_t) "$ ", 3, BIOS_LIGHT_GREEN);
+    put("MewingDulu",BIOS_LIGHT_BLUE);
+    put("$ ", BIOS_LIGHT_GREEN);
     CP.start_col = 12;
 }
 
@@ -53,10 +53,8 @@ void put(char* buf, uint8_t color) {
     syscall(6, (uint32_t) buf, strlen(buf), color);
 }
 
-int inputparse (char *input, char parsed_args[3][128]) {
-    // Declare the vars
-    int nums = -1;
-    // int len = strlen(input);
+int inputparse (char *args_val, char parsed_args[3][128]) {
+    int nums = 0;
 
     // Process to count the args, initialize 0
     int i = 0; // All char index
@@ -65,10 +63,14 @@ int inputparse (char *input, char parsed_args[3][128]) {
 
     // Iterate all over the chars
     // Ignore blanks at first
-    while (input[i] != '\0') {
+    while(args_val[i] == ' '){
+        i++;
+    }
+    
+    while (args_val[i] != '\0') {
         nums++;
-        while (input[i] != ' ') {
-            parsed_args[j][k] = input[i];
+        while (args_val[i] != ' ' && args_val[i] != '\0') {
+            parsed_args[j][k] = args_val[i];
             k++;
             i++;
         }
@@ -77,6 +79,7 @@ int inputparse (char *input, char parsed_args[3][128]) {
         i++;
         k = 0;
     }
+
     return nums;
 }
 
@@ -93,9 +96,7 @@ void print_starting_screen(){
 int main(void) {
     // Buffer   
     char args_val[2048];
-    // int args_info[128][2];
-    // char path_str[2048];
-
+    char parsed_args[3][128];
 
     print_starting_screen();
 
@@ -106,29 +107,74 @@ int main(void) {
     while (true) {
         // Clear buffer
         clear(args_val, 2048);
+        for(int i = 0 ; i < 3; i++){
+            clear(parsed_args[i], 128);
+        }
         
         // add template
         put_template();
-
+        
         // keyboard input
         syscall(4, (uint32_t) args_val, 2048, 0x0);
-        
-        if (strcmp((char*)args_val, "ls", strlen("ls")) == 0) {
-            print_directory();
-            put("\n", BIOS_RED);
-        } else {
-            put("Command Tidak Ditemukan!\n", BIOS_RED);
-        }   
 
-        // int num_args = inputparse(c, args);
-        // if (num_args > 3){}
+        int args_count = inputparse(args_val, parsed_args);
+
+        if(args_count != 0){
+            if (strcmp((char*)parsed_args[0], "cd", 2) == 0) {
+                // cd command
+                if(args_count > 2){
+                    put("cd: to many arguments\n", BIOS_RED);
+                } else{
+                    put("Command cd\n", BIOS_LIGHT_GREEN);
+                }
+
+            } else if (strcmp((char*)parsed_args[0], "ls", 2) == 0) {
+                // ls command
+                ls();
+
+            } else if (strcmp((char*)parsed_args[0], "mkdir", 5) == 0) {
+                // mkdir command
+                if(args_count < 2){
+                    put("mkdir: missing operand\n", BIOS_RED);
+                } 
+                put("Command mkdir\n", BIOS_LIGHT_GREEN);
+
+            // } else if (strcmp((char*)parsed_args[0], "cat", 3) == 0) {
+            //     // cat command
+            //     put("Command cat\n", BIOS_LIGHT_GREEN);
+
+            // } else if (strcmp((char*)parsed_args[0], "cp", 2) == 0) {
+            //     // cp command
+            //     put("Command cp\n", BIOS_LIGHT_GREEN);
+
+            // } else if (strcmp((char*)parsed_args[0], "rm", 2) == 0) {
+            //     // rm command
+            //     put("Command rm\n", BIOS_LIGHT_GREEN);
+
+            // } else if (strcmp((char*)parsed_args[0], "mv", 2) == 0) {
+            //     // mv command
+            //     put("Command mv\n", BIOS_LIGHT_GREEN);
+
+            // } else if (strcmp((char*)parsed_args[0], "find", 4) == 0) {
+            //     // whereis command
+            //     put("Command find", BIOS_LIGHT_GREEN);
+
+            } else if (strcmp((char*)parsed_args[0], "clear", strlen("clear")) == 0) {
+                // clear command
+                if (args_count > 1) {
+                    put("clear: too many arguments\n", BIOS_RED);
+                } else {
+                    // clear screen
+                    // TODO: reset keyboard position
+                    syscall(9, 0, 0, 0);
+                }
+
+            } else {
+                put(args_val, BIOS_RED);
+                put(": command not found\n", BIOS_RED);
+            }
+        }
         
-        // Clear all input buffer
-        
-        
-        // clear(args[0], 128);
-        // clear(args[1], 128);
-        // clear(args[2], 128);
     }
 
     return 0;

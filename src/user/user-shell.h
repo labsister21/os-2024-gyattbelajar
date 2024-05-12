@@ -44,3 +44,7 @@ void put(char* buf, uint8_t color);
 
 // Print starting screen text
 void print_starting_screen();
+
+// parse input, into each argument
+// Return amount of argument
+int inputparse (char *args_val, char args_info[3][128]);
