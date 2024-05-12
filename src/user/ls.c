@@ -4,9 +4,11 @@
 
 void print_directory() {
     int i;
+    syscall(8, (uint32_t) &dir_table, 2, 1);
     for (i = 0; i < 63; i++) {
         if (dir_table.table[i].user_attribute == UATTR_NOT_EMPTY) {
-            syscall(6, (uint32_t)dir_table.table[i].name, 7, BIOS_GREY);
+            syscall(6, (uint32_t)dir_table.table[i].name, 8, BIOS_GREY);
+            // syscall(5, '\n', BIOS_GREY, 0);
         }
     }
 }

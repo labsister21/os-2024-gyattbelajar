@@ -72,5 +72,14 @@ int max(uint16_t a, uint16_t b);
 */
 size_t strlen(char* string);
 
+/**
+ * Like strcmp
+*/
 int isEqual(const char *stringA, char *stringB, int size);
+
+/**
+ * @param char* string
+ * @param int length of string to clear 
+*/
+void clear(char* string, int size);
 #endif

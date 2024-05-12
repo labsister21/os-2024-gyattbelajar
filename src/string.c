@@ -82,3 +82,9 @@ size_t strlen(char* string) {
     }
     return len;
 }
+
+void clear(char* string, int size) {
+    for (int i = 0; i < size; i++) {
+        string[i] = 0x00;
+    }
+}

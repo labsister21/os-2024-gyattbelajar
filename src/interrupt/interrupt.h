@@ -175,6 +175,19 @@ void pic_remap(void);
  */
 void main_interrupt_handler(struct InterruptFrame frame);
 
+
+/**
+ * switch use value of eax
+ * 0: read to fat32
+ * 1: read directory
+ * 2: write to fat32
+ * 3: delete item in fat32
+ * 4: get keyboard buffer, string from keyboard.c. ebx: pointer to keyboard buffer, ecx: length of identifier, edx unused 
+ * 5: put one char to screen. ebx: char, ecx: color, edx unused
+ * 6: puts string to screen. ebx: the string, ecx: length of string, edx: color
+ * 7: activate keyboard
+ * 8: read cluster from FAT32, save to FAT32request pointer in ebx, ecx: the cluster nunber pointed, edx 1
+*/
 void syscall(struct InterruptFrame frame);
 
 #endif

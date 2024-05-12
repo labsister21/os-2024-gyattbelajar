@@ -79,6 +79,8 @@ bool is_keyboard_input_on() {
     return keyboard_state.keyboard_input_on;
 }
 
+// TODO implement ctrl + c
+// TODO implement arrow to move cursor
 void keyboard_isr(void) {
     uint8_t scancode = in(KEYBOARD_DATA_PORT);
     pressed.pressed[scancode] = true;
@@ -123,7 +125,6 @@ void keyboard_isr(void) {
         }
         char converted = keyboard_scancode_1_to_ascii_map[scancode];
         keyboard_state.current_char = converted;
-        // TODO implement ctrl + c
 
         if (converted == 0) {
             pic_ack(IRQ_KEYBOARD);

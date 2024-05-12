@@ -24,7 +24,10 @@ struct CursorPosition {
 
 extern struct CursorPosition CP;
 
+// current directory cluster number
 extern uint32_t current_directory;
+
+// current directory table
 extern struct FAT32DirectoryTable dir_table;
 
 // syscall ke interrupt
