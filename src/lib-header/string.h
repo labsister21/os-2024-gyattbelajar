@@ -56,6 +56,8 @@ void *memmove(void *dest, const void *src, size_t n);
  * @param char *stringA kata pertama
  * @param char *stringB kata kedua
  * @param int size ukuran yang akan dicek
+ * 
+ * @return 0 jika sama, else beda
 */
 int strcmp(const char *stringA, char *stringB, int size);
 

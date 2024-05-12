@@ -88,8 +88,8 @@ int main(void) {
         // syscall(5, (uint32_t) c, 0xF, 0); // Put char one by one
         
         if (strcmp((char*)c, "ls", strlen("ls")) == 0) {
-            syscall(6, (uint32_t) "Calling LS\n", 12, BIOS_RED);
             print_directory();
+            syscall(6, (uint32_t) "Calling LS\n", 12, BIOS_RED);
         } else {
             syscall(6, (uint32_t) "Command Tidak Ditemukan!\n", 26, BIOS_RED);
         }
