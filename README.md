@@ -70,6 +70,7 @@
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
         <li><a href="#instruction">Instruction</a></li>
+        <li><a href="#how-to-run-program">How to Run Program</a></li>
         <li>
         <details>
           <summary><a href="#features">Features</a></summary>
@@ -156,6 +157,19 @@ example:
 `make clean` : Remove all build generated files  
 `make ADT.test` : Running test for ADT test file, for example ( `make time.test` )  
 `make test.all` : Running all test  
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- HO TO RUN PROGRAM -->
+## How to Run Program
+Run this command in sequence
+
+1. `make disk`
+
+2. `make build`
+
+3. `make insert-shell`
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
