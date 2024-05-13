@@ -21,6 +21,7 @@
         "streambuf": "c",
         "user-shell.h": "c",
         "ls.h": "c",
-        "disk.h": "c"
+        "disk.h": "c",
+        "command.h": "c"
     },
 }

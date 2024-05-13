@@ -1,6 +1,7 @@
 #include <stdint.h>
-#include "ls.h"
+#include "../lib-header/string.h"
 #include "../file-system/fat32.h"
+#include "syscall.h"
 
 // definisi warna
 #define BIOS_LIGHT_GREEN 0b1010
@@ -11,8 +12,8 @@
 #define BIOS_BROWN       0b0110
 #define BIOS_WHITE       0b1111
 #define BIOS_BLACK       0b0000
+void put_template();
 
-// definisi struct posisi kursor dan character buffer
 struct CursorPosition {
     int row; // current row cursor
     int col; // current col cursor
@@ -30,12 +31,6 @@ extern uint32_t current_directory;
 // current directory table
 extern struct FAT32DirectoryTable dir_table;
 
-// syscall ke interrupt
-void syscall(uint32_t eax, uint32_t ebx, uint32_t ecx, uint32_t edx);
-
-// show template tanpa path
-void put_template();
-
 // show template with path, pastikan path depannya ada /{path}
 void put_template_with_path(char* path);
 
@@ -48,3 +43,6 @@ void print_starting_screen();
 // parse input, into each argument
 // Return amount of argument
 int inputparse (char *args_val, char args_info[3][128]);
+
+void start_command();
+
