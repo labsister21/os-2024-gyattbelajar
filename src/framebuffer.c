@@ -41,6 +41,7 @@ void putchar(char c, uint32_t color) {
     if (c != '\n') {
         framebuffer_write(framebuffer_state.row, framebuffer_state.col, c, color, 0);
     }
+
     if (framebuffer_state.col == COLUMN - 1 || c == '\n') {
         framebuffer_state.row++;
         framebuffer_state.col = 0;
@@ -61,10 +62,11 @@ void clear_screen() {
     framebuffer_set_cursor(0, 0);
 }
 
-void puts(const char* string, uint32_t count, uint32_t color) {
+void puts(uint32_t string, uint32_t count, uint32_t color) {
+    char* temp = (char*) string;
     uint32_t i;
     for (i = 0; i < count; i++) {
-        putchar(string[i], color);
+        putchar(temp[i], color);
     }
 }
 

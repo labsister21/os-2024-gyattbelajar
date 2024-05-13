@@ -92,9 +92,10 @@ void kernel_setup(void) {
         .name                  = "shell",
         .ext                   = "\0\0\0",
         .parent_cluster_number = ROOT_CLUSTER_NUMBER,
-        .buffer_size           = 0x100000,
+        .buffer_size           = 0x200000,
     };
     read(request);
+    write(request);
 
     set_tss_kernel_current_stack();
     kernel_execute_user_program((uint8_t*) 0);

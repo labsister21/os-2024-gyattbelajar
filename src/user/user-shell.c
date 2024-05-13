@@ -115,12 +115,14 @@ int main(void) {
         put_template();
         
         // keyboard input
-        syscall(4, (uint32_t) args_val, 2048, 0x0);
+        syscall(4, (uint32_t) args_val, CP.start_col, 0x0);
 
         int args_count = inputparse(args_val, parsed_args);
 
+        syscall(6, (uint32_t)"test\n", 6, BIOS_LIGHT_BLUE);
+
         if(args_count != 0){
-            if (strcmp((char*)parsed_args[0], "cd", 2) == 0) {
+            if (strcmp((char*)parsed_args[0], "cd", 3) == 0) {
                 // cd command
                 if(args_count > 2){
                     put("cd: to many arguments\n", BIOS_RED);
@@ -128,38 +130,38 @@ int main(void) {
                     put("Command cd\n", BIOS_LIGHT_GREEN);
                 }
 
-            } else if (strcmp((char*)parsed_args[0], "ls", 2) == 0) {
+            } else if (strcmp((char*)parsed_args[0], "ls", 3) == 0) {
                 // ls command
                 ls();
 
-            } else if (strcmp((char*)parsed_args[0], "mkdir", 5) == 0) {
+            } else if (strcmp((char*)parsed_args[0], "mkdir", 6) == 0) {
                 // mkdir command
                 if(args_count < 2){
                     put("mkdir: missing operand\n", BIOS_RED);
                 } 
                 put("Command mkdir\n", BIOS_LIGHT_GREEN);
 
-            // } else if (strcmp((char*)parsed_args[0], "cat", 3) == 0) {
-            //     // cat command
-            //     put("Command cat\n", BIOS_LIGHT_GREEN);
+            } else if (strcmp((char*)parsed_args[0], "cat", 4) == 0) {
+                // cat command
+                put("Command cat\n", BIOS_LIGHT_GREEN);
 
-            // } else if (strcmp((char*)parsed_args[0], "cp", 2) == 0) {
-            //     // cp command
-            //     put("Command cp\n", BIOS_LIGHT_GREEN);
+            } else if (strcmp((char*)parsed_args[0], "cp", 3) == 0) {
+                // cp command
+                put("Command cp\n", BIOS_LIGHT_GREEN);
 
-            // } else if (strcmp((char*)parsed_args[0], "rm", 2) == 0) {
-            //     // rm command
-            //     put("Command rm\n", BIOS_LIGHT_GREEN);
+            } else if (strcmp((char*)parsed_args[0], "rm", 3) == 0) {
+                // rm command
+                put("Command rm\n", BIOS_LIGHT_GREEN);
 
-            // } else if (strcmp((char*)parsed_args[0], "mv", 2) == 0) {
-            //     // mv command
-            //     put("Command mv\n", BIOS_LIGHT_GREEN);
+            } else if (strcmp((char*)parsed_args[0], "mv", 3) == 0) {
+                // mv command
+                put("Command mv\n", BIOS_LIGHT_GREEN);
 
-            // } else if (strcmp((char*)parsed_args[0], "find", 4) == 0) {
-            //     // whereis command
-            //     put("Command find", BIOS_LIGHT_GREEN);
+            } else if (strcmp((char*)parsed_args[0], "find", 5) == 0) {
+                // whereis command
+                put("Command find\n", BIOS_LIGHT_GREEN);
 
-            } else if (strcmp((char*)parsed_args[0], "clear", strlen("clear")) == 0) {
+            } else if (strcmp((char*)parsed_args[0], "clear", 6) == 0) {
                 // clear command
                 if (args_count > 1) {
                     put("clear: too many arguments\n", BIOS_RED);
@@ -170,10 +172,11 @@ int main(void) {
                 }
 
             } else {
-                put(args_val, BIOS_RED);
-                put(": command not found\n", BIOS_RED);
+                // put(args_val, BIOS_RED);
+                // put(": command not found\n", BIOS_RED);
             }
         }
+        syscall(6, (uint32_t)"Test\n", 6, BIOS_BROWN);
         
     }
 

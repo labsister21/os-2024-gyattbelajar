@@ -14,4 +14,5 @@ void ls() {
         }
     }
     put("\n", BIOS_GREY);
+    put("\n", BIOS_GREY);
 }

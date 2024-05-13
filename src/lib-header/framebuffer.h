@@ -61,7 +61,7 @@ void putchar(char c, uint32_t color);
 
 void clear_screen();
 
-void puts(const char* string, uint32_t count, uint32_t color);
+void puts(uint32_t string, uint32_t count, uint32_t color);
 
 void scrollDown();
 
