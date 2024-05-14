@@ -84,4 +84,11 @@ int isEqual(const char *stringA, char *stringB, int size);
  * @param int length of string to clear 
 */
 void clear(char* string, int size);
+
+/**
+ * @brief string concat with "/" between the string
+ * 
+ */
+void str_path_concat(char* dest, const char* src1, const char* src2);
+
 #endif

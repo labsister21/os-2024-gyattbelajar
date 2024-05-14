@@ -93,3 +93,20 @@ void clear(char* string, int size) {
         string[i] = 0x00;
     }
 }
+
+void str_path_concat(char* dest, const char* src1, const char* src2) {
+    // Copy src1 to dest
+    while (*src1) {
+        *dest++ = *src1++;
+    }
+    // Add a '/' separator if not already present
+    if (*(dest - 1) != '/') {
+        *dest++ = '/';
+    }
+    // Copy src2 to dest
+    while (*src2) {
+        *dest++ = *src2++;
+    }
+    // Null terminate the destination string
+    *dest = '\0';
+}
