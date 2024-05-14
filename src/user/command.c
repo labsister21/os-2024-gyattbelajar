@@ -55,6 +55,10 @@ int parse_path(char *path, char directories[12][13]) {
                 clear(temp_dir, 13);
                 name_len = 0;
                 dir_count++;
+                
+            } else if(currIdx > 1){
+                // path not valid
+                return -1;  
             }
         } else {
             temp_dir[name_len] = path[currIdx];
@@ -201,11 +205,11 @@ void start_command() {
                 // whereis command
                 if (args_count > 2){
                     put("find: too many arguments\n", BIOS_RED);
-
+                } else if(args_count < 2){
+                    put("find: missing operand\n", BIOS_RED);
                 } else{
-                    find(parsed_args, args_count);
+                    find(parsed_args);
                 }
-                put("Command find\n", BIOS_LIGHT_GREEN);
 
             } else if (strcmp((char*)parsed_args[0], "clear", 6) == 0) {
                 // clear command
