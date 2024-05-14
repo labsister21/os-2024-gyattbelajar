@@ -1,6 +1,7 @@
 {
     "debug.onTaskErrors": "debugAnyway",
     "files.associations": {
+        "*.hpp": "cpp",
         "*.pl": "prolog",
         "*.c": "c",
         "*.embeddedhtml": "html",
@@ -22,6 +23,9 @@
         "user-shell.h": "c",
         "ls.h": "c",
         "disk.h": "c",
-        "command.h": "c"
+        "command.h": "c",
+        "find.h": "c",
+        "typeinfo": "c",
+        "functional": "c"
     },
 }

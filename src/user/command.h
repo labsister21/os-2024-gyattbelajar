@@ -1,3 +1,6 @@
+#ifndef __COMMAND_H__
+#define __COMMAND_H__
+
 #include <stdint.h>
 #include "../lib-header/string.h"
 #include "../file-system/fat32.h"
@@ -42,7 +45,21 @@ void print_starting_screen();
 
 // parse input, into each argument
 // Return amount of argument
-int inputparse (char *args_val, char args_info[3][128]);
+int inputparse (char *args_val, char parsed_args[5][128]);
 
+// shell command 
 void start_command();
 
+// Check if the path is absolute
+bool is_path_absolute(char (*path));
+
+// parse arguments
+int parse_path(char *path, char directories[12][13]);
+
+// Update the dir_table according to the cluster number
+void updateDirectoryTable(uint32_t cluster_number);
+
+// Find the name of directory in the dir_table and return its cluster number
+int findEntryName(char* name);
+
+#endif

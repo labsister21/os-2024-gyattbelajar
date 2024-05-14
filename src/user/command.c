@@ -1,4 +1,5 @@
 #include "command.h"
+#include "find.h"
 
 struct CursorPosition CP;
 
@@ -6,7 +7,7 @@ uint32_t current_directory = ROOT_CLUSTER_NUMBER;
 struct FAT32DirectoryTable dir_table;
 
 
-int inputparse (char *args_val, char parsed_args[3][128]) {
+int inputparse (char *args_val, char parsed_args[5][128]) {
     int nums = 0;
 
     // Process to count the args, initialize 0
@@ -36,6 +37,46 @@ int inputparse (char *args_val, char parsed_args[3][128]) {
     return nums;
 }
 
+// parse argument to paths
+// return -1 if directory name length is > 13
+// doesn't check if the directory is valid
+// return amount of directory
+int parse_path(char *path, char directories[12][13]) {
+    int currIdx = 0;
+    int endIdx = strlen(path) - 1;
+    char temp_dir[13] = {0};
+    int name_len = 0;
+    int dir_count = 0;
+
+    while (currIdx <= endIdx) {
+        if (path[currIdx] == '/') {
+            if (name_len > 0) { // Only add if there was a name
+                memcpy(directories[dir_count], temp_dir, name_len);
+                clear(temp_dir, 13);
+                name_len = 0;
+                dir_count++;
+            }
+        } else {
+            temp_dir[name_len] = path[currIdx];
+            name_len++;
+            if (name_len > 13) {
+                // name + . + extension
+                // name limit is 8
+                // extension limit is 3
+                // total len is 13
+                return -1;
+            }
+        }
+        currIdx++;
+    }
+
+    if (name_len > 0) { // Add the last directory if exists
+        memcpy(directories[dir_count], temp_dir, name_len);
+        dir_count++;
+    }
+
+    return dir_count;
+}
 
 void put_template() {
     put("MewingDulu",BIOS_LIGHT_BLUE);
@@ -56,21 +97,55 @@ void put(char* buf, uint8_t color) {
     syscall(6, (uint32_t) buf, strlen(buf), color);
 }
 
+// Check if path is absolute
+bool is_path_absolute(char (*args_value)){
+    return memcmp(args_value, "/", 1) == 0;
+}
 
+// Find the name of directory in the dir_table and return its cluster number
+int findEntryName(char* name) {
+    // i = 0 --> curr_dir
+    int i = 1;
+    while (i < 64) {
+        int name_len = strlen(name);
+        int dir_name_len = strlen(dir_table.table[i].name);
+
+        if(name_len >= dir_name_len){
+            if (memcmp(dir_table.table[i].name, name, name_len) == 0 && 
+                dir_table.table[i].user_attribute == UATTR_NOT_EMPTY) 
+                return i;
+
+        } else {
+            if (memcmp(dir_table.table[i].name, name, dir_name_len) == 0 && 
+                dir_table.table[i].user_attribute == UATTR_NOT_EMPTY) 
+                return i;
+        }
+    
+        i++;
+    }
+
+    return -1;
+}
+
+// Update the dir_table according to the cluster number
+void updateDirectoryTable(uint32_t cluster_number) {
+    // read cluster
+    syscall(8, (uint32_t) &dir_table, cluster_number, 0x0);
+}
 
 void print_starting_screen(){
     // Mewcrosoft ascii art
-    // put("$$$$$$\\$$$$\\  $$$$$$\\ $$\\  $$\\  $$\\ $$$$$$$\\ $$$$$$\\  $$$$$$\\  $$$$$$$\\ $$$$$$\\ $$ /  \\__$$$$$$\\   \n", BIOS_LIGHT_GREEN);
-    // put("$$  _$$  _$$\\$$  __$$\\$$ | $$ | $$ $$  _____$$  __$$\\$$  __$$\\$$  _____$$  __$$\\$$$$\\    \\_$$  _|  \n", BIOS_LIGHT_GREEN);
-    // put("$$ / $$ / $$ $$$$$$$$ $$ | $$ | $$ $$ /     $$ |  \\__$$ /  $$ \\$$$$$$\\ $$ /  $$ $$  _|     $$ |    \n", BIOS_LIGHT_GREEN);
-    // put("$$ | $$ | $$ $$   ____$$ | $$ | $$ $$ |     $$ |     $$ |  $$ |\\____$$\\$$ |  $$ $$ |       $$ |$$\\ \n", BIOS_LIGHT_GREEN);
-    // put("$$ | $$ | $$ \\$$$$$$$\\\\$$$$$\\$$$$  \\$$$$$$$\\$$ |     \\$$$$$$  $$$$$$$  \\$$$$$$  $$ |       \\$$$$  |\n", BIOS_LIGHT_GREEN);
-    // put("\\__| \\__| \\__|\\_______|\\_____|\\____/ \\_______\\__|      \\______/\\_______/ \\______/\\__|        \\____/ \n\n", BIOS_LIGHT_GREEN);
+    put("================================================================================\n", BIOS_DARK_GREY);
+    put("                      MEWCROSOFT\n\n", BIOS_LIGHT_GREEN);
+    put("                  Made By GyattBelajar\n", BIOS_WHITE);
+    put("   https://github.com/labsister21/os-2024-gyattbelajar\n", BIOS_WHITE);
+    put("                    Mewwing all day\n\n", BIOS_RED);
+    put("================================================================================\n", BIOS_DARK_GREY);
 }
 
 void start_command() {
     char args_val[2048];
-    char parsed_args[3][128];
+    char parsed_args[5][128];
     while (true) {
         // Clear buffer
         clear(args_val, 2048);
@@ -124,6 +199,12 @@ void start_command() {
 
             } else if (strcmp((char*)parsed_args[0], "find", 5) == 0) {
                 // whereis command
+                if (args_count > 2){
+                    put("find: too many arguments\n", BIOS_RED);
+
+                } else{
+                    find(parsed_args, args_count);
+                }
                 put("Command find\n", BIOS_LIGHT_GREEN);
 
             } else if (strcmp((char*)parsed_args[0], "clear", 6) == 0) {
@@ -132,7 +213,6 @@ void start_command() {
                     put("clear: too many arguments\n", BIOS_RED);
                 } else {
                     // clear screen
-                    // TODO: reset keyboard position
                     syscall(9, 0, 0, 0);
                 }
 
