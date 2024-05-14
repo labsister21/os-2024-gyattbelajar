@@ -19,7 +19,7 @@ const uint8_t fs_signature[BLOCK_SIZE] = {
 struct FAT32DriverState fileSystem = {};
 
 uint32_t cluster_to_lba(uint32_t cluster){
-    return cluster * CLUSTER_SIZE;
+    return cluster * 4;
 }
 
 void write_clusters(const void *ptr, uint32_t cluster_number, uint8_t cluster_count){
