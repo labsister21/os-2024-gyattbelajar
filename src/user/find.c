@@ -39,8 +39,6 @@ void find(char (*parsed_arg)[128], int args_count){
     // update dir_table
     updateDirectoryTable(current_directory);
 
-    uint32_t temp_current_directory = current_directory;
-
     if(args_count == 1){
         for (int i = 1; i < 63; i++) {
             if(dir_table.table[i].user_attribute == UATTR_NOT_EMPTY){
