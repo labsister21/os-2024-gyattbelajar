@@ -122,7 +122,8 @@ void syscall(struct InterruptFrame frame) {
             break;
         case 9:
             framebuffer_clear();
-            // TODO: reset keyboard position
+            framebuffer_state.col = 0;
+            framebuffer_state.row = 0;
             break;
     }
 }
