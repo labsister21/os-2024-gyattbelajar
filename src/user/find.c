@@ -30,15 +30,15 @@ void find_recursive(char* dir_name, char* parent_path, uint32_t parent_cluster, 
 
 
 // find command
-void find(char (*parsed_arg)[128]){
+void find(char (*parsed_args)[128]){
     // update dir_table
     updateDirectoryTable(current_directory);
 
     char directories[12][13];
-    int dir_count = parse_path(parsed_arg[1], directories);
+    int dir_count = parse_path(parsed_args[1], directories);
     if(dir_count == -1){
         put("find: ", BIOS_RED);
-        put(parsed_arg[1], BIOS_RED);
+        put(parsed_args[1], BIOS_RED);
         put(": path not valid\n", BIOS_RED);
         return;
     }
@@ -64,7 +64,7 @@ void find(char (*parsed_arg)[128]){
 
     if(!haveFound){
         put("find: ", BIOS_RED);
-        put(parsed_arg[1], BIOS_RED);
+        put(parsed_args[1], BIOS_RED);
         put(" : No such file or directory\n", BIOS_RED);
     }
 }
