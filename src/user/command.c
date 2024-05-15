@@ -5,6 +5,47 @@ struct CursorPosition CP;
 uint32_t current_directory = ROOT_CLUSTER_NUMBER;
 struct FAT32DirectoryTable dir_table;
 
+struct ClusterBuffer cl[2] = { 0 };
+struct FAT32DriverRequest request = {       // Dipake di mkdir
+    .buf = &cl,
+    .name = "shell",
+    .ext = "\0\0\0",
+    .parent_cluster_number = ROOT_CLUSTER_NUMBER,
+    .buffer_size = CLUSTER_SIZE,
+};
+
+// to store user input
+char buf[256];
+
+void mkdir (char argument[]) {       // Asumsi panjang len harus <= 8
+    int32_t retcode;
+    uint8_t name_len = strlen(argument);
+    request.buffer_size = 0;
+    request.buf = buf;
+    while (name_len < 8) {      // Fill the rest with null
+        argument[name_len] = '\0';
+        name_len++;
+    }
+    memcpy(request.ext, "dir", 3); // Folder extension (dir
+    request.parent_cluster_number = current_directory;  // Parent cluster number
+    memcpy(request.name, argument, name_len);   // Folder name
+    syscall(1, (uint32_t) &request, (uint32_t) &retcode, 0); // syscall to create folder
+    if (retcode == 0) {     // Folder already exists
+        put("Folder already exists!\n", BIOS_RED);
+    } else if (retcode == 2) {  // Folder not found
+        memset(request.buf, 0, CLUSTER_SIZE);
+        syscall(2, (uint32_t) &request, (uint32_t) &retcode, 0); // syscall to write folder
+        if (retcode == 0) {
+            put("Folder is successfully created!\n", BIOS_LIGHT_GREEN);
+        }
+        else {
+            put("Failed to create folder! Unknown error\n", BIOS_RED);
+        }
+    }
+    else {
+        put("Failed to create folder! Unknown error\n", BIOS_RED);
+    }
+}
 
 int inputparse (char *args_val, char parsed_args[5][128]) {
     int nums = 0;
@@ -188,8 +229,13 @@ void start_command() {
                 // mkdir command
                 if(args_count < 2){
                     put("mkdir: missing operand\n", BIOS_RED);
-                } 
-                put("Command mkdir\n", BIOS_LIGHT_GREEN);
+                }
+                else if(args_count > 2){
+                    put("mkdir: too many arguments\n", BIOS_RED);
+                }
+                else {
+                    mkdir(parsed_args[1]);
+                }
 
             } else if (strcmp((char*)parsed_args[0], "cat", 4) == 0) {
                 // cat command
