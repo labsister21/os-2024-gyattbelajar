@@ -1,5 +1,4 @@
 #include "command.h"
-#include "find.h"
 
 struct CursorPosition CP;
 
@@ -106,23 +105,30 @@ bool is_path_absolute(char (*args_value)){
     return memcmp(args_value, "/", 1) == 0;
 }
 
-// Find the name of directory in the dir_table and return its cluster number
+// Find the name of directory in the dir_table and return it's cluster number
+// return -1 if file not found
 int findEntryName(char* name) {
     // i = 0 --> curr_dir
     int i = 1;
     while (i < 64) {
-        int name_len = strlen(name);
-        int dir_name_len = strlen(dir_table.table[i].name);
+        if(memcmp(dir_table.table[i].name, name, 8) == 0 && 
+                dir_table.table[i].user_attribute == UATTR_NOT_EMPTY){
+            char ext[3] = "\0\0\0";
+            bool is_ext = false;
+            int k = 0;
+            int name_len = strlen(name);
+            for(int j = 0; j < name_len; j++){
+                if(is_ext){
+                    ext[k] = name[j];
+                    k++;
+                } else if(name[j] == '.'){
+                    is_ext = true;
+                }
+            }
 
-        if(name_len >= dir_name_len){
-            if (memcmp(dir_table.table[i].name, name, name_len) == 0 && 
-                dir_table.table[i].user_attribute == UATTR_NOT_EMPTY) 
+            if(memcmp(dir_table.table[i].ext, ext, 3) == 0){
                 return i;
-
-        } else {
-            if (memcmp(dir_table.table[i].name, name, dir_name_len) == 0 && 
-                dir_table.table[i].user_attribute == UATTR_NOT_EMPTY) 
-                return i;
+            }
         }
     
         i++;
@@ -191,18 +197,36 @@ void start_command() {
 
             } else if (strcmp((char*)parsed_args[0], "cp", 3) == 0) {
                 // cp command
-                put("Command cp\n", BIOS_LIGHT_GREEN);
+                if(args_count > 3){
+                    put("find: too many arguments\n", BIOS_RED);
+                } else if (args_count < 3){
+                    put("find: missing operand\n", BIOS_RED);
+                } else{
+                    cp(parsed_args);
+                }
 
             } else if (strcmp((char*)parsed_args[0], "rm", 3) == 0) {
                 // rm command
-                put("Command rm\n", BIOS_LIGHT_GREEN);
+                if (args_count > 2){
+                    put("rm: too many arguments\n", BIOS_RED);
+                } else if(args_count < 2){
+                    put("rm: missing operand\n", BIOS_RED);
+                } else{
+                    rm(parsed_args);
+                }
 
             } else if (strcmp((char*)parsed_args[0], "mv", 3) == 0) {
                 // mv command
-                put("Command mv\n", BIOS_LIGHT_GREEN);
+                if (args_count > 3){
+                    put("mv: too many arguments\n", BIOS_RED);
+                } else if(args_count < 3){
+                    put("mv: missing operand\n", BIOS_RED);
+                } else{
+                    rm(parsed_args);
+                }
 
             } else if (strcmp((char*)parsed_args[0], "find", 5) == 0) {
-                // whereis command
+                // find command
                 if (args_count > 2){
                     put("find: too many arguments\n", BIOS_RED);
                 } else if(args_count < 2){

@@ -4,6 +4,7 @@
 // recursive find
 void find_recursive(char* dir_name, char* parent_path, uint32_t parent_cluster, char directories[12][13], int curr_directory_index, int dir_count, bool* haveFound){
     int cluster_number = findEntryName(dir_name);
+
     if(cluster_number == -1) return;
     updateDirectoryTable(cluster_number);
 
@@ -11,7 +12,7 @@ void find_recursive(char* dir_name, char* parent_path, uint32_t parent_cluster, 
         if(dir_table.table[i].user_attribute == UATTR_NOT_EMPTY){
             char result[256];
             str_path_concat(result, parent_path , dir_table.table[i].name);
-            if(strcmp(dir_table.table[i].name, directories[curr_directory_index], 13) == 0){
+            if(strcmp(dir_table.table[i].name, directories[curr_directory_index], 8) == 0){
                 if(curr_directory_index + 1 == dir_count - 1 ){
                     put(result, BIOS_BROWN);
                     put("\n", BIOS_BROWN);
@@ -48,7 +49,7 @@ void find(char (*parsed_args)[128]){
         if(dir_table.table[i].user_attribute == UATTR_NOT_EMPTY){
             char result[256];
             str_path_concat(result, ".", dir_table.table[i].name);
-            if(strcmp(dir_table.table[i].name, directories[0], 13) == 0){
+            if(strcmp(dir_table.table[i].name, directories[0], 8) == 0){
                 if(dir_count == 1){
                     put(result, BIOS_BROWN);
                     put("\n", BIOS_BROWN);

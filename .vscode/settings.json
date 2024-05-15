@@ -26,6 +26,7 @@
         "command.h": "c",
         "find.h": "c",
         "typeinfo": "c",
-        "functional": "c"
+        "functional": "c",
+        "syscall.h": "c"
     },
 }

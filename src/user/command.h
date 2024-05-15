@@ -5,6 +5,10 @@
 #include "../lib-header/string.h"
 #include "../file-system/fat32.h"
 #include "syscall.h"
+#include "find.h"
+#include "cp.h"
+#include "rm.h"
+#include "mv.h"
 
 // definisi warna
 #define BIOS_LIGHT_GREEN 0b1010
