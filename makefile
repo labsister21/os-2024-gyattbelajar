@@ -14,7 +14,7 @@ STORAGE_FILE = storage
 
 # Flags
 WARNING_CFLAG = -Wall -Wextra -Werror
-DEBUG_CFLAG   = -fshort-wchar -g
+DEBUG_CFLAG   = -ffreestanding -fshort-wchar -g
 STRIP_CFLAG   = -nostdlib -fno-stack-protector -nostartfiles -nodefaultlibs -ffreestanding
 CFLAGS        = $(DEBUG_CFLAG) $(WARNING_CFLAG) $(STRIP_CFLAG) -m32 -c -I$(SOURCE_FOLDER)
 AFLAGS        = -f elf32 -g -F dwarf
@@ -82,8 +82,8 @@ user-shell:
 	@$(LIN) -T $(SOURCE_FOLDER)/user/user-linker.ld -melf_i386 --oformat=binary \
 		crt0.o user-shell.o string.o syscall.o ls.o find.o command.o -o $(OUTPUT_FOLDER)/shell
 	@echo Linking object shell object files and generate flat binary...
-	@$(LIN) -T $(SOURCE_FOLDER)/user/user-linker.ld syscall.o command.o -melf_i386 --oformat=elf32-i386 \
-		crt0.o user-shell.o string.o ls.o find.o -o $(OUTPUT_FOLDER)/shell_elf
+	@$(LIN) -T $(SOURCE_FOLDER)/user/user-linker.ld -melf_i386 --oformat=elf32-i386 \
+		crt0.o user-shell.o string.o syscall.o ls.o find.o command.o -o $(OUTPUT_FOLDER)/shell_elf
 	@echo Linking object shell object files and generate ELF32 for debugging...
 	@size --target=binary $(OUTPUT_FOLDER)/shell
 	@rm -f *.o
