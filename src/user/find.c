@@ -8,13 +8,24 @@ void find_recursive(char* dir_name, char* parent_path, uint32_t parent_cluster, 
     if(cluster_number == -1) return;
     updateDirectoryTable(cluster_number);
 
-    for(int i = 1; i < 63; i++){
+    char result[256];
+    for(int i = 1; i < 64; i++){
+        clear(result, 256);
         if(dir_table.table[i].user_attribute == UATTR_NOT_EMPTY){
-            char result[256];
             str_path_concat(result, parent_path , dir_table.table[i].name);
-            if(strcmp(dir_table.table[i].name, directories[curr_directory_index], 8) == 0){
+            int len_compare = 0;
+            if(strlen(dir_table.table[i].name) > strlen(directories[curr_directory_index])){
+                len_compare = strlen(dir_table.table[i].name);
+            } else{
+                len_compare = strlen(directories[curr_directory_index]);
+            }
+            if(strcmp(dir_table.table[i].name, directories[curr_directory_index], len_compare) == 0){
                 if(curr_directory_index + 1 == dir_count - 1 ){
                     put(result, BIOS_BROWN);
+                    if(dir_table.table[i].attribute == false && dir_table.table[i].ext[0] != '\0'){
+                        put(".", BIOS_BROWN );
+                        put(dir_table.table[i].ext, BIOS_BROWN);
+                    }
                     put("\n", BIOS_BROWN);
                     *haveFound = true;
                 }else{
@@ -45,13 +56,23 @@ void find(char (*parsed_args)[128]){
     }
 
     bool haveFound = false;
-    for(int i = 1; i < 63; i++){
+    for(int i = 1; i < 64; i++){
         if(dir_table.table[i].user_attribute == UATTR_NOT_EMPTY){
             char result[256];
             str_path_concat(result, ".", dir_table.table[i].name);
-            if(strcmp(dir_table.table[i].name, directories[0], 8) == 0){
+            int len_compare = 0;
+            if(strlen(dir_table.table[i].name) > strlen(directories[0])){
+                len_compare = strlen(dir_table.table[i].name);
+            } else{
+                len_compare = strlen(directories[0]);
+            }
+            if(strcmp(dir_table.table[i].name, directories[0], len_compare) == 0){
                 if(dir_count == 1){
                     put(result, BIOS_BROWN);
+                    if(dir_table.table[i].attribute == false && dir_table.table[i].ext[0] != '\0'){
+                        put(".", BIOS_BROWN );
+                        put(dir_table.table[i].ext, BIOS_BROWN);
+                    }
                     put("\n", BIOS_BROWN);
                     haveFound = true;
                 }else{

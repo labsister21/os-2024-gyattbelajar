@@ -82,6 +82,9 @@ int inputparse (char *args_val, char parsed_args[5][128]) {
 // doesn't check if the directory is valid
 // return amount of directory
 int parse_path(char *path, char directories[12][13]) {
+    for(int i = 0; i < 12; i++){
+        clear(directories[i], 13);
+    }
     int currIdx = 0;
     int endIdx = strlen(path) - 1;
     char temp_dir[13] = {0};
