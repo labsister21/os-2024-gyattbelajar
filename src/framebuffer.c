@@ -65,6 +65,7 @@ void clear_screen() {
 void puts(uint32_t string, uint32_t count, uint32_t color) {
     char* temp = (char*) string;
     uint32_t i;
+    if (framebuffer_state.row >= ROW - 1) scrollDown();
     for (i = 0; i < count; i++) {
         putchar(temp[i], color);
     }

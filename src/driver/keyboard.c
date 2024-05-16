@@ -177,12 +177,13 @@ void keyboard_isr(void) {
                 keyboard_state.keyboard_input_on = 1;
                 framebuffer_state.row++;
                 framebuffer_state.col = 0;
+                if (framebuffer_state.row >= ROW - 1) {
+                    // framebuffer_state.row--;
+                    scrollDown();
+                }
                 framebuffer_write(framebuffer_state.row, framebuffer_state.col, ' ', 0xFF, 0);
                 framebuffer_set_cursor(framebuffer_state.row, framebuffer_state.col);
                 pic_ack(IRQ_KEYBOARD);
-                if (framebuffer_state.row >= ROW - 1) {
-                    scrollDown();
-                }
                 keyboard_state_deactivate();
                 return;
             }
