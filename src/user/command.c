@@ -47,6 +47,42 @@ void mkdir (char argument[]) {       // Asumsi panjang len harus <= 8
     }
 }
 
+void cd(char argument[]) {
+    uint32_t search_dir_num = ROOT_CLUSTER_NUMBER;
+    char* name = "\0\0\0\0\0\0\0\0";
+    updateDirectoryTable(search_dir_num);
+
+    if (strlen(argument) > 8) {
+        put("Directory name is too long!\n", BIOS_RED);
+        return;
+    }
+    else if (strcmp(argument, "..", strlen(argument) == 0)) {
+        if (current_directory == ROOT_CLUSTER_NUMBER) {
+            put("Already in root directory!\n", BIOS_RED);
+            return;
+        }
+        else {
+            // TODO : Move to parent directory
+        }
+    }
+    else {
+        memcpy(name, argument, strlen(argument));
+        int entry_idx = findEntryName(name);
+        if (entry_idx == -1) {
+            put("Directory not found!\n", BIOS_RED);
+            return;
+        }
+        else {
+            if (dir_table.table[entry_idx].attribute == 1) {
+                current_directory = (int) ((dir_table.table[entry_idx].cluster_high << 16) | dir_table.table[entry_idx].cluster_low);
+            }
+            else {
+                put("Folder name is not a directory\n", BIOS_RED);
+            }
+        }
+    }
+}
+
 int inputparse (char *args_val, char parsed_args[5][128]) {
     int nums = 0;
 
@@ -222,6 +258,7 @@ void start_command() {
                     put("cd: to many arguments\n", BIOS_RED);
                 } else{
                     put("Command cd\n", BIOS_LIGHT_GREEN);
+                    cd(parsed_args[1]);
                 }
 
             } else if (strcmp((char*)parsed_args[0], "ls", 3) == 0) {
