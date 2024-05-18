@@ -1,5 +1,6 @@
 #include "find.h"
 #include "command.h"
+#include "../file-system/fat32.h"
 
 // recursive find
 void find_recursive(char* dir_name, char* parent_path, uint32_t parent_cluster, char directories[12][13], int curr_directory_index, int dir_count, bool* haveFound){
@@ -90,3 +91,61 @@ void find(char (*parsed_args)[128]){
         put(" : No such file or directory\n", BIOS_RED);
     }
 }
+
+void print_absolute_path(int current_file) {
+    struct FAT32DirectoryTable tempDir;
+    syscall(8, (uint32_t) &tempDir, ROOT_CLUSTER_NUMBER, 1);
+
+    char path[6][16];
+    int i = 0;
+    int current_directory_number = tempDir.table[current_file].parent;
+    while (current_directory_number != ROOT_CLUSTER_NUMBER) {
+        memcpy(path[i], tempDir.table[current_directory_number].name, 16);
+        current_directory_number = tempDir.table[current_directory_number].parent;
+        i++;
+        if (i >= 10) break; // Safe type
+    }
+
+    for (i = 5; i >= 0; i--) {
+        if (strlen(path[i]) != 0) {
+            put(path[i], BIOS_GREY);
+            put("/", BIOS_GREY);
+        }
+    }
+}
+
+void find2(char* filename) {
+    struct FAT32DirectoryTable tempDir;
+    syscall(8, (uint32_t) &tempDir, ROOT_CLUSTER_NUMBER, 1);
+
+    char name[8];
+    int len = strlen(filename);
+    int i = 0;
+    while (i < len && filename[i] != '.' && i < 8) {
+        name[i] = filename[i];
+        i++;
+    }
+    i += 1;
+    int k = 0;
+    char ext[3];
+
+    while (i < len && k < 3) {
+        ext[k] = filename[i];
+        k++;
+        i++;
+    }
+
+    for (i = 0; i < 64; i++) {
+        if (strcmp(name, tempDir.table[i].name, 8) == 0 && strcmp(ext, tempDir.table[i].ext, 3) == 0) {
+            print_absolute_path(i);
+            put(tempDir.table[i].name, BIOS_BROWN);
+            int len = strlen(tempDir.table[i].ext);
+            if (len != 0) {
+                syscall(5, '.', BIOS_LIGHT_BLUE, 0);
+                syscall(6, (uint32_t)tempDir.table[i].ext, 3, BIOS_LIGHT_BLUE);
+            }
+        }
+    }
+    put("\n", BIOS_BLACK);
+}
+

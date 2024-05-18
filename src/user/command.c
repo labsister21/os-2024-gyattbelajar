@@ -116,7 +116,7 @@ void put_template_with_path(char* path) {
     syscall(6, (uint32_t) "MewingDulu/", 11, BIOS_LIGHT_BLUE);
     syscall(6, (uint32_t) path, len, BIOS_LIGHT_BLUE);
     syscall(6, (uint32_t) "$ ", 3, BIOS_LIGHT_GREEN);
-    CP.start_col = 12 + len - 1;
+    CP.start_col = 12 + len + 1;
 }
 
 // Wrapper for syscall 6
@@ -271,7 +271,8 @@ void start_command() {
                 } else if(args_count < 2){
                     put("find: missing operand\n", BIOS_RED);
                 } else{
-                    find(parsed_args);
+                    // find(parsed_args);
+                    find2(parsed_args[1]);
                 }
 
             } else if (strcmp((char*)parsed_args[0], "clear", 6) == 0) {
