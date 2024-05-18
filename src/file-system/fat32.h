@@ -74,7 +74,6 @@ struct FAT32FileAllocationTable {
  * @param create_date    Unused / optional
  * @param access_time    Unused / optional
  * @param cluster_high   Upper 16-bit of cluster number
- * @param parent         Cluster number of parent
  * 
  * @param modified_time  Unused / optional
  * @param modified_date  Unused / optional
@@ -92,7 +91,6 @@ struct FAT32DirectoryEntry {
     uint16_t create_date;
     uint16_t access_date;
     uint16_t cluster_high;
-    uint16_t parent;
     
     uint16_t modified_time;
     uint16_t modified_date;
