@@ -27,6 +27,9 @@
         "find.h": "c",
         "typeinfo": "c",
         "functional": "c",
-        "syscall.h": "c"
+        "syscall.h": "c",
+        "paging.h": "c",
+        "mkdir.h": "c",
+        "touch.h": "c"
     },
 }

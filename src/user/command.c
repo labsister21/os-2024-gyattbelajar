@@ -212,7 +212,7 @@ void start_command() {
 
             } else if (strcmp((char*)parsed_args[0], "ls", 3) == 0) {
                 // ls command
-                // ls();
+                ls();
 
             } else if (strcmp((char*)parsed_args[0], "mkdir", 6) == 0) {
                 // mkdir command
@@ -283,6 +283,9 @@ void start_command() {
                     syscall(9, 0, 0, 0);
                 }
 
+            } else if (strcmp((char*)parsed_args[0], "touch", 6) == 0) {
+                makefile(parsed_args[1]);
+            
             } else {
                 put(args_val, BIOS_RED);
                 put(": command not found\n", BIOS_RED);

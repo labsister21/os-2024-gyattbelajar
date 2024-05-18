@@ -19,7 +19,7 @@ const uint8_t fs_signature[BLOCK_SIZE] = {
 struct FAT32DriverState fileSystem = {};
 
 uint32_t cluster_to_lba(uint32_t cluster){
-    return cluster * 4;
+    return cluster * 4; 
 }
 
 void write_clusters(const void *ptr, uint32_t cluster_number, uint8_t cluster_count){
@@ -221,6 +221,7 @@ int8_t write(struct FAT32DriverRequest request){
     entries[directoryLoc].user_attribute = UATTR_NOT_EMPTY;
     entries[directoryLoc].cluster_high = (loc[0] >> 16) & 0xFFFF;
     entries[directoryLoc].cluster_low = loc[0] & 0xFFFF;
+    entries[directoryLoc].parent = request.parent_cluster_number;
 
     // Identify the type of the requested new entry
     if (request.buffer_size == 0){

@@ -11,6 +11,8 @@
 #include "mv.h"
 #include "mkdir.h"
 #include "cd.h"
+#include "ls.h"
+#include "touch.h"
 
 // definisi warna
 #define BIOS_LIGHT_GREEN 0b1010
