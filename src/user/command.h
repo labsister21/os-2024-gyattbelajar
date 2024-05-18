@@ -11,6 +11,7 @@
 #include "mv.h"
 #include "mkdir.h"
 #include "cd.h"
+#include "cat.h"
 #include "ls.h"
 #include "touch.h"
 

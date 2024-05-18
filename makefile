@@ -77,6 +77,7 @@ user-shell:
 	@$(CC)  $(CFLAGS) -fno-pie $(SOURCE_FOLDER)/string.c -o string.o
 	@$(CC)  $(CFLAGS) -fno-pie $(SOURCE_FOLDER)/user/mkdir.c -o mkdir.o
 	@$(CC)  $(CFLAGS) -fno-pie $(SOURCE_FOLDER)/user/cd.c -o cd.o
+	@$(CC)  $(CFLAGS) -fno-pie $(SOURCE_FOLDER)/user/cat.c -o cat.o
 	@$(CC)  $(CFLAGS) -fno-pie $(SOURCE_FOLDER)/user/ls.c -o ls.o
 	@$(CC)  $(CFLAGS) -fno-pie $(SOURCE_FOLDER)/user/find.c -o find.o
 	@$(CC)  $(CFLAGS) -fno-pie $(SOURCE_FOLDER)/user/cp.c -o cp.o
@@ -86,10 +87,10 @@ user-shell:
 	@$(CC)  $(CFLAGS) -fno-pie $(SOURCE_FOLDER)/user/syscall.c -o syscall.o
 	@$(CC)  $(CFLAGS) -fno-pie $(SOURCE_FOLDER)/user/command.c -o command.o
 	@$(LIN) -T $(SOURCE_FOLDER)/user/user-linker.ld -melf_i386 --oformat=binary \
-		crt0.o user-shell.o string.o syscall.o mkdir.o cd.o ls.o find.o rm.o mv.o cp.o touch.o command.o -o $(OUTPUT_FOLDER)/shell
+		crt0.o user-shell.o string.o syscall.o mkdir.o cd.o cat.o ls.o find.o rm.o mv.o cp.o touch.o command.o -o $(OUTPUT_FOLDER)/shell
 	@echo Linking object shell object files and generate flat binary...
 	@$(LIN) -T $(SOURCE_FOLDER)/user/user-linker.ld -melf_i386 --oformat=elf32-i386 \
-		crt0.o user-shell.o string.o syscall.o mkdir.o cd.o ls.o find.o rm.o mv.o cp.o touch.o command.o -o $(OUTPUT_FOLDER)/shell_elf
+		crt0.o user-shell.o string.o syscall.o mkdir.o cd.o cat.o ls.o find.o rm.o mv.o cp.o touch.o command.o -o $(OUTPUT_FOLDER)/shell_elf
 	@echo Linking object shell object files and generate ELF32 for debugging...
 	@size --target=binary $(OUTPUT_FOLDER)/shell
 	@rm -f *.o
