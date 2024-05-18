@@ -9,6 +9,8 @@
 #include "cp.h"
 #include "rm.h"
 #include "mv.h"
+#include "mkdir.h"
+#include "cd.h"
 
 // definisi warna
 #define BIOS_LIGHT_GREEN 0b1010
@@ -37,6 +39,19 @@ extern uint32_t current_directory;
 
 // current directory table
 extern struct FAT32DirectoryTable dir_table;
+
+// dipake di mkdir
+extern struct ClusterBuffer cl[2];
+extern struct FAT32DriverRequest global_request;
+
+// to store user input?
+extern char buf[256];
+
+// to store the current path
+extern char current_path[128];
+
+// initialize current path with \0
+void init_current_path();
 
 // show template with path, pastikan path depannya ada /{path}
 void put_template_with_path(char* path);
