@@ -116,7 +116,7 @@ void put_template_with_path(char* path) {
     syscall(6, (uint32_t) "MewingDulu/", 11, BIOS_LIGHT_BLUE);
     syscall(6, (uint32_t) path, len, BIOS_LIGHT_BLUE);
     syscall(6, (uint32_t) "$ ", 3, BIOS_LIGHT_GREEN);
-    CP.start_col = 12 + len - 1;
+    CP.start_col = 12 + len + 1;
 }
 
 // Wrapper for syscall 6
@@ -191,8 +191,11 @@ void start_command() {
             clear(parsed_args[i], 128);
         }
         
+        // Buat testing debug
+        char *path = current_path;
+        strlen(path);
+
         // add template
-        // put_template();
         put_template_with_path(current_path);
         
         // keyboard input
