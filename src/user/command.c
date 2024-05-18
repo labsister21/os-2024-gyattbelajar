@@ -6,7 +6,7 @@ uint32_t current_directory = ROOT_CLUSTER_NUMBER;
 struct FAT32DirectoryTable dir_table;
 
 struct ClusterBuffer cl[2] = { 0 };
-struct FAT32DriverRequest request = {       // Dipake di mkdir
+struct FAT32DriverRequest global_request = {       // Dipake di mkdir
     .buf = &cl,
     .name = "shell",
     .ext = "\0\0\0",
@@ -17,69 +17,13 @@ struct FAT32DriverRequest request = {       // Dipake di mkdir
 // to store user input
 char buf[256];
 
-void mkdir (char argument[]) {       // Asumsi panjang len harus <= 8
-    int32_t retcode;
-    uint8_t name_len = strlen(argument);
-    request.buffer_size = 0;
-    request.buf = buf;
-    while (name_len < 8) {      // Fill the rest with null
-        argument[name_len] = '\0';
-        name_len++;
-    }
-    memcpy(request.ext, "dir", 3); // Folder extension (dir
-    request.parent_cluster_number = current_directory;  // Parent cluster number
-    memcpy(request.name, argument, name_len);   // Folder name
-    syscall(1, (uint32_t) &request, (uint32_t) &retcode, 0); // syscall to create folder
-    if (retcode == 0) {     // Folder already exists
-        put("Folder already exists!\n", BIOS_RED);
-    } else if (retcode == 2) {  // Folder not found
-        memset(request.buf, 0, CLUSTER_SIZE);
-        syscall(2, (uint32_t) &request, (uint32_t) &retcode, 0); // syscall to write folder
-        if (retcode == 0) {
-            put("Folder is successfully created!\n", BIOS_LIGHT_GREEN);
-        }
-        else {
-            put("Failed to create folder! Unknown error\n", BIOS_RED);
-        }
-    }
-    else {
-        put("Failed to create folder! Unknown error\n", BIOS_RED);
-    }
-}
+// to store current directory path
+char current_path[128];
 
-void cd(char argument[]) {
-    uint32_t search_dir_num = ROOT_CLUSTER_NUMBER;
-    char* name = "\0\0\0\0\0\0\0\0";
-    updateDirectoryTable(search_dir_num);
-
-    if (strlen(argument) > 8) {
-        put("Directory name is too long!\n", BIOS_RED);
-        return;
-    }
-    else if (strcmp(argument, "..", strlen(argument) == 0)) {
-        if (current_directory == ROOT_CLUSTER_NUMBER) {
-            put("Already in root directory!\n", BIOS_RED);
-            return;
-        }
-        else {
-            // TODO : Move to parent directory
-        }
-    }
-    else {
-        memcpy(name, argument, strlen(argument));
-        int entry_idx = findEntryName(name);
-        if (entry_idx == -1) {
-            put("Directory not found!\n", BIOS_RED);
-            return;
-        }
-        else {
-            if (dir_table.table[entry_idx].attribute == 1) {
-                current_directory = (int) ((dir_table.table[entry_idx].cluster_high << 16) | dir_table.table[entry_idx].cluster_low);
-            }
-            else {
-                put("Folder name is not a directory\n", BIOS_RED);
-            }
-        }
+// initialize current path with \0
+void init_current_path() {
+    for (int i = 0; i < 128; i++) {
+        current_path[i] = '\0';
     }
 }
 
@@ -169,7 +113,7 @@ void put_template() {
 
 void put_template_with_path(char* path) {
     int len = strlen(path);
-    syscall(6, (uint32_t) "MewingDulu", 11, BIOS_LIGHT_BLUE);
+    syscall(6, (uint32_t) "MewingDulu/", 11, BIOS_LIGHT_BLUE);
     syscall(6, (uint32_t) path, len, BIOS_LIGHT_BLUE);
     syscall(6, (uint32_t) "$ ", 3, BIOS_LIGHT_GREEN);
     CP.start_col = 12 + len - 1;
@@ -236,6 +180,10 @@ void print_starting_screen(){
 void start_command() {
     char args_val[2048];
     char parsed_args[5][128];
+
+    // Initialize current path
+    init_current_path();
+
     while (true) {
         // Clear buffer
         clear(args_val, 2048);
@@ -244,7 +192,8 @@ void start_command() {
         }
         
         // add template
-        put_template();
+        // put_template();
+        put_template_with_path(current_path);
         
         // keyboard input
         syscall(4, (uint32_t) args_val, CP.start_col, 0x0);
@@ -274,7 +223,11 @@ void start_command() {
                     put("mkdir: too many arguments\n", BIOS_RED);
                 }
                 else {
-                    mkdir(parsed_args[1]);
+                    if (strlen(parsed_args[1]) > 8) {
+                        put("Directory name must less than eight characters!\n", BIOS_RED);
+                    } else {
+                        mkdir(parsed_args[1]);
+                    }
                 }
 
             } else if (strcmp((char*)parsed_args[0], "cat", 4) == 0) {
