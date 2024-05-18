@@ -9,7 +9,7 @@ void ls() {
     // syscall(8, (uint32_t) &dir_table, 2, 1);
     for (i = 0; i < 63; i++) {
         // Warna abu untuk folder, biru untuk file
-        if (tempDir.table[i].user_attribute == UATTR_NOT_EMPTY && tempDir.table[i].parent == current_directory) {
+        if (tempDir.table[i].user_attribute == UATTR_NOT_EMPTY) {
             // File, attribute = 0
             if (tempDir.table[i].attribute == 0) {
                 syscall(6, (uint32_t)tempDir.table[i].name, 8, BIOS_LIGHT_BLUE);
