@@ -9,18 +9,19 @@ void cd(char argument[]) {
         put("Directory name is too long!\n", BIOS_RED);
         return;
     }
-    else if (strcmp(argument, "..", strlen(argument))) {
+    else if (strcmp(argument, "..", strlen(argument)) == 0) {
         if (current_directory == ROOT_CLUSTER_NUMBER) {
             put("Already in root directory!\n", BIOS_RED);
             return;
         }
         else {
             // TODO : Move to parent directory
-            current_directory = dir_table.table[0].cluster_low;
+            current_directory = dir_table.table[current_directory].parent;    // MASIH SALAH karena dir_table.table urutannya selalu berubah ubah sedangkan nilai .parent ialah statis   
 
             // Remove the last directory from the current path
             int path_len = strlen(current_path);
-            int i = path_len - 1;
+            current_path[path_len-1] = '\0';
+            int i = path_len - 2;
             while (current_path[i] != '/' && i >= 0) {
                 current_path[i] = '\0';
                 i--;
