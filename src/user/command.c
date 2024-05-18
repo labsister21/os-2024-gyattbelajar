@@ -209,7 +209,6 @@ void start_command() {
                 if(args_count > 2){
                     put("cd: to many arguments\n", BIOS_RED);
                 } else{
-                    put("Command cd\n", BIOS_LIGHT_GREEN);
                     cd(parsed_args[1]);
                 }
 
@@ -235,7 +234,13 @@ void start_command() {
 
             } else if (strcmp((char*)parsed_args[0], "cat", 4) == 0) {
                 // cat command
-                put("Command cat\n", BIOS_LIGHT_GREEN);
+                if(args_count > 2){
+                    put("cat: too many arguments\n", BIOS_RED);
+                } else if(args_count < 2){
+                    put("cat: missing operand\n", BIOS_RED);
+                } else{
+                    cat(parsed_args[1]);
+                }
 
             } else if (strcmp((char*)parsed_args[0], "cp", 3) == 0) {
                 // cp command

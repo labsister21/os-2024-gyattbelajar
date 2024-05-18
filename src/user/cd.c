@@ -16,7 +16,8 @@ void cd(char argument[]) {
         }
         else {
             // TODO : Move to parent directory
-            current_directory = dir_table.table[current_directory].parent;    // MASIH SALAH karena dir_table.table urutannya selalu berubah ubah sedangkan nilai .parent ialah statis   
+            // current_directory = dir_table.table[current_directory].parent;    // MASIH SALAH karena dir_table.table urutannya selalu berubah ubah sedangkan nilai .parent ialah statis   
+            current_directory = (int) ((dir_table.table[0].cluster_high << 16) | dir_table.table[0].cluster_low);       // MASIH SALAH
 
             // Remove the last directory from the current path
             int path_len = strlen(current_path);
