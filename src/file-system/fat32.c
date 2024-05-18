@@ -221,7 +221,6 @@ int8_t write(struct FAT32DriverRequest request){
     entries[directoryLoc].user_attribute = UATTR_NOT_EMPTY;
     entries[directoryLoc].cluster_high = (loc[0] >> 16) & 0xFFFF;
     entries[directoryLoc].cluster_low = loc[0] & 0xFFFF;
-    entries[directoryLoc].parent = request.parent_cluster_number;
 
     // Identify the type of the requested new entry
     if (request.buffer_size == 0){
