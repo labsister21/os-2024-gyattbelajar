@@ -67,7 +67,6 @@ int32_t process_create_user_process(struct FAT32DriverRequest request) {
 
     // *** 2 - Membaca dan melakukan load executable dari file system ke memory baru ***
 
-    new_pcb->memory.page_frame_used_count = 2;
     new_pcb->memory.virtual_addr_used[0] = KERNEL_VIRTUAL_ADDRESS_BASE + (void*) paging_allocate_user_page_frame(pd_new, request.buf);
     new_pcb->memory.virtual_addr_used[1] = KERNEL_VIRTUAL_ADDRESS_BASE + (void*) paging_allocate_user_page_frame(pd_new, (void*)0xBFFFFFFC);
     paging_use_page_directory(pd_new);
