@@ -27,7 +27,6 @@ void makefile(char *filename) {
     // Create file FAT32DriverRequest
     struct FAT32DriverRequest request = {
         .buf                   = (uint8_t*) 0,
-        // .ext                   = "\0\0\0",
         .parent_cluster_number = current_directory,
         .buffer_size           = CLUSTER_SIZE,
     };

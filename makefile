@@ -84,10 +84,12 @@ user-shell:
 	@$(CC)  $(CFLAGS) -fno-pie $(SOURCE_FOLDER)/user/rm.c -o rm.o
 	@$(CC)  $(CFLAGS) -fno-pie $(SOURCE_FOLDER)/user/mv.c -o mv.o
 	@$(CC)  $(CFLAGS) -fno-pie $(SOURCE_FOLDER)/user/touch.c -o touch.o
+	@$(CC)  $(CFLAGS) -fno-pie $(SOURCE_FOLDER)/user/cd.c -o cd.o
+	@$(CC)  $(CFLAGS) -fno-pie $(SOURCE_FOLDER)/user/mkdir.c -o mkdir.o
 	@$(CC)  $(CFLAGS) -fno-pie $(SOURCE_FOLDER)/user/syscall.c -o syscall.o
 	@$(CC)  $(CFLAGS) -fno-pie $(SOURCE_FOLDER)/user/command.c -o command.o
 	@$(LIN) -T $(SOURCE_FOLDER)/user/user-linker.ld -melf_i386 --oformat=binary \
-		crt0.o user-shell.o string.o syscall.o mkdir.o cd.o cat.o ls.o find.o rm.o mv.o cp.o touch.o command.o -o $(OUTPUT_FOLDER)/shell
+		crt0.o user-shell.o string.o syscall.o mkdir.o cd.o cat.o ls.o find.o rm.o mv.o cp.o touch.o cd.o mkdir.o command.o -o $(OUTPUT_FOLDER)/shell
 	@echo Linking object shell object files and generate flat binary...
 	@$(LIN) -T $(SOURCE_FOLDER)/user/user-linker.ld -melf_i386 --oformat=elf32-i386 \
 		crt0.o user-shell.o string.o syscall.o mkdir.o cd.o cat.o ls.o find.o rm.o mv.o cp.o touch.o command.o -o $(OUTPUT_FOLDER)/shell_elf

@@ -1,5 +1,5 @@
 #include "mkdir.h"
-#include "stdint.h"
+#include <stdint.h>
 #include "command.h"
 
 // argument is folder name
@@ -31,6 +31,34 @@ void mkdir (char argument[]) {       // Asumsi panjang len harus <= 8
         memcpy(current_path, curr_path, 256);
         if (errorCode == 0) {
             put("Folder is successfully created!\n", BIOS_LIGHT_GREEN);
+            updateDirectoryTable(current_directory);
+            int cluster_now = findEntryCluster(global_request.name);
+            if (cluster_now) {
+                int root = current_directory;
+                updateDirectoryTable(current_directory);
+                struct FAT32DirectoryEntry tempRoot = dir_table.table[0];
+                memcpy(&tempRoot.name, &dir_table.table[0].name, 8);
+                memcpy(&tempRoot.ext, &dir_table.table[0].ext, 3);
+                tempRoot.attribute = dir_table.table[0].attribute;
+                tempRoot.user_attribute = dir_table.table[0].user_attribute;
+                tempRoot.undelete = dir_table.table[0].undelete;
+                tempRoot.create_date = dir_table.table[0].create_date;
+                tempRoot.create_time = dir_table.table[0].create_time;
+                tempRoot.cluster_high = dir_table.table[0].cluster_high;
+                tempRoot.cluster_low = dir_table.table[0].cluster_low;
+                updateDirectoryTable(cluster_now);
+                memcpy(dir_table.table[1].name, tempRoot.name, 8);
+                memcpy(dir_table.table[1].ext, tempRoot.ext, 3);
+                dir_table.table[1].attribute = tempRoot.attribute;
+                dir_table.table[1].user_attribute = tempRoot.user_attribute;
+                dir_table.table[1].undelete = tempRoot.undelete;
+                dir_table.table[1].create_date = tempRoot.create_date;
+                dir_table.table[1].create_time = tempRoot.create_time;
+                dir_table.table[1].cluster_high = tempRoot.cluster_high;
+                dir_table.table[1].cluster_low = tempRoot.cluster_low;
+                syscall(10, (uint32_t) &dir_table.table, cluster_now, 1);
+                updateDirectoryTable(root);
+            }
         }
         else {
             put("Failed to create folder after trying to write folder! Unknown error\n", BIOS_RED);

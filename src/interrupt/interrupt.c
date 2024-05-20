@@ -75,6 +75,7 @@ void pic_remap(void) {
  * 7 : active keyboard state
  * 8 : read cluster
  * 9 : clear screen
+ * 10 : write cluster
  */
 void syscall(struct InterruptFrame frame) {
     switch (frame.cpu.general.eax) {
@@ -124,6 +125,9 @@ void syscall(struct InterruptFrame frame) {
             framebuffer_clear();
             framebuffer_state.col = 0;
             framebuffer_state.row = 0;
+            break;
+        case 10:
+            write_clusters((struct FAT32DirectoryTable*) frame.cpu.general.ebx, frame.cpu.general.ecx, 1);
             break;
     }
 }

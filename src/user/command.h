@@ -82,6 +82,7 @@ int parse_path(char *path, char directories[12][13]);
 void updateDirectoryTable(uint32_t cluster_number);
 
 // Find the name of directory in the dir_table and return its cluster number
-int findEntryName(char* name);
+int findEntryCluster(char* name);
 
+int findEntryIndex(char* name);
 #endif

@@ -131,28 +131,27 @@ bool is_path_absolute(char (*args_value)){
 
 // Find the name of directory in the dir_table and return it's cluster number
 // return -1 if file not found
-int findEntryName(char* name) {
+int findEntryCluster(char* name) {
     // i = 0 --> curr_dir
     int i = 1;
     while (i < 64) {
         if(memcmp(dir_table.table[i].name, name, 8) == 0 && 
                 dir_table.table[i].user_attribute == UATTR_NOT_EMPTY){
-            char ext[3] = "\0\0\0";
-            bool is_ext = false;
-            int k = 0;
-            int name_len = strlen(name);
-            for(int j = 0; j < name_len; j++){
-                if(is_ext){
-                    ext[k] = name[j];
-                    k++;
-                } else if(name[j] == '.'){
-                    is_ext = true;
-                }
-            }
+                return dir_table.table[i].cluster_low;
+        }
+        i++;
+    }
 
-            if(memcmp(dir_table.table[i].ext, ext, 3) == 0){
+    return -1;
+}
+
+int findEntryIndex(char* name) {
+    // i = 0 --> curr_dir
+    int i = 1;
+    while (i < 64) {
+        if(memcmp(dir_table.table[i].name, name, 8) == 0 && 
+                dir_table.table[i].user_attribute == UATTR_NOT_EMPTY){
                 return i;
-            }
         }
     
         i++;
@@ -160,6 +159,7 @@ int findEntryName(char* name) {
 
     return -1;
 }
+
 
 // Update the dir_table according to the cluster number
 void updateDirectoryTable(uint32_t cluster_number) {
@@ -245,9 +245,9 @@ void start_command() {
             } else if (strcmp((char*)parsed_args[0], "cp", 3) == 0) {
                 // cp command
                 if(args_count > 3){
-                    put("find: too many arguments\n", BIOS_RED);
+                    put("cp: too many arguments\n", BIOS_RED);
                 } else if (args_count < 3){
-                    put("find: missing operand\n", BIOS_RED);
+                    put("cp: missing operand\n", BIOS_RED);
                 } else{
                     cp(parsed_args);
                 }
@@ -259,7 +259,7 @@ void start_command() {
                 } else if(args_count < 2){
                     put("rm: missing operand\n", BIOS_RED);
                 } else{
-                    rm(parsed_args);
+                    rm(parsed_args[1]);
                 }
 
             } else if (strcmp((char*)parsed_args[0], "mv", 3) == 0) {
@@ -269,7 +269,7 @@ void start_command() {
                 } else if(args_count < 3){
                     put("mv: missing operand\n", BIOS_RED);
                 } else{
-                    rm(parsed_args);
+                    mv(parsed_args);
                 }
 
             } else if (strcmp((char*)parsed_args[0], "find", 5) == 0) {
@@ -279,7 +279,8 @@ void start_command() {
                 } else if(args_count < 2){
                     put("find: missing operand\n", BIOS_RED);
                 } else{
-                    find(parsed_args);
+                    // find(parsed_args);
+                    find2(parsed_args[1]);
                 }
 
             } else if (strcmp((char*)parsed_args[0], "clear", 6) == 0) {

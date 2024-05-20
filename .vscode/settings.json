@@ -30,6 +30,8 @@
         "syscall.h": "c",
         "paging.h": "c",
         "mkdir.h": "c",
-        "touch.h": "c"
+        "touch.h": "c",
+        "rm.h": "c",
+        "cp.h": "c"
     },
 }
