@@ -4,7 +4,7 @@
 
 <br />
 <div align="center">
-  <h1 align="center">Mewcrosoft</h1>
+  <h1 align="center">Mewcrosoft 🤫🧏🏻‍♂️</h1>
 
   <p align="center">
     <h3>Tugas Besar IF2230 Operating System</h3>
@@ -13,7 +13,7 @@
     ·
     <a href="https://github.com/labsister21/os-2024-gyattbelajar/issues">Request Feature</a>
     <br/>
-    <h3><a href="https://www.youtube.com/shorts/9PGyaaxxvJg"> >>>>>> Mewwing is Life <<<<<< </a></h3>
+    <h3><a href="https://www.youtube.com/shorts/9PGyaaxxvJg"> >>>>>> Mewing is Life <<<<<< </a></h3>
 <br>
 
 ![Mewing img](img/mewing.png)
@@ -64,17 +64,19 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Mewcrosoft is an operating system made by the Gyattbelajar team from scratch. Using c programming language and through many hardship of building an operating system from scratch. We manage to build Mewcrosoft, a operating system just for those who likes mewwing.
+Mewcrosoft is an Operating System made by the Gyattbelajar team from scratch. Using c programming language and through many hardship of building an Operating System from scratch. We manage to build Mewcrosoft, a operating system just for those who likes mewing 🤫🧏🏻‍♂️.
 
-After our expirience making an operating system, we learned how much depth and complexity needed to design and built modern operating system.
 
 <div align="center">
 
 ![gigachad](img/gigachad.png)
 
-Us after learning that making an operating system is hard to make 🥵🥵
+Us after learning that making an operating system is hard to make 🥵🥵 🗿🗿
 
 </div>
+
+After our experience making an operating system, we learned how much depth and complexity needed to design and built a simple Operating System. We learned the importance a single byte is inside the memory or the storage of an Operating System can effect the whole working an operating system. 
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
