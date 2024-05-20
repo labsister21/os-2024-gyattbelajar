@@ -20,7 +20,7 @@ void kernel_setup(void) {
     activate_keyboard_interrupt();
     framebuffer_clear();
     framebuffer_set_cursor(0, 0);
-    // keyboard_state_activate();
+    keyboard_state_activate();
     initialize_filesystem_fat32();
     gdt_install_tss();
     set_tss_register();
@@ -43,7 +43,7 @@ void kernel_setup(void) {
 
     // Create & execute process 0
     process_create_user_process(request);
-    paging_use_page_directory(_process_list[0].context.page_directory_virtual_addr);
+    // paging_use_page_directory(_process_list[0].context.page_directory_virtual_addr);
     kernel_execute_user_program((void*) 0x0);
 
     // // Dummy file
@@ -56,9 +56,12 @@ void kernel_setup(void) {
     // set_tss_kernel_current_stack();
     // kernel_execute_user_program((uint8_t*) 0);
     
-    // while (true) ;
-    //     //  char c;
-    //     //  get_keyboard_buffer(&c);
-    //     //  if (c) framebuffer_write(0, col++, c, 0xF, 0);
+    // while (true){
+    //     char c;
+    //     get_keyboard_buffer(&c);
+    //     if (c) framebuffer_write(0, col++, c, 0xF, 0);
+    // }
+
+    while (true);
     
 }
