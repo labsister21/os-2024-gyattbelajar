@@ -279,8 +279,7 @@ void start_command() {
                 } else if(args_count < 2){
                     put("find: missing operand\n", BIOS_RED);
                 } else{
-                    // find(parsed_args);
-                    find2(parsed_args[1]);
+                    find(parsed_args[1]);
                 }
 
             } else if (strcmp((char*)parsed_args[0], "clear", 6) == 0) {
