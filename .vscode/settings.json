@@ -32,6 +32,7 @@
         "mkdir.h": "c",
         "touch.h": "c",
         "rm.h": "c",
-        "cp.h": "c"
+        "cp.h": "c",
+        "process.h": "c"
     },
 }
