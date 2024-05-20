@@ -3,13 +3,14 @@
 #include "command.h"
 
 void ls() {
+    updateDirectoryTable(current_directory);
     int i;
     struct FAT32DirectoryTable tempDir;
     syscall(8, (uint32_t) &tempDir, current_directory, 1);
     // int found 
-    for (i = 0; i < 64; i++) {
+    for (i = 2; i < 64; i++) {
         // Warna abu untuk folder, biru untuk file
-        if (tempDir.table[i].user_attribute == UATTR_NOT_EMPTY && tempDir.table[i].parent == current_directory) {
+        if (tempDir.table[i].user_attribute == UATTR_NOT_EMPTY) {
             // File, attribute = 0
             if (tempDir.table[i].attribute == 0) {
                 syscall(6, (uint32_t)tempDir.table[i].name, 8, BIOS_LIGHT_BLUE);

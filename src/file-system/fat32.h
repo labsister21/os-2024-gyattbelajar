@@ -92,7 +92,6 @@ struct FAT32DirectoryEntry {
     uint16_t create_date;
     uint16_t access_date;
     uint16_t cluster_high;
-    uint16_t parent;
     
     uint16_t modified_time;
     uint16_t modified_date;

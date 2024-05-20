@@ -221,7 +221,6 @@ int8_t write(struct FAT32DriverRequest request){
     entries[directoryLoc].user_attribute = UATTR_NOT_EMPTY;
     entries[directoryLoc].cluster_high = (loc[0] >> 16) & 0xFFFF;
     entries[directoryLoc].cluster_low = loc[0] & 0xFFFF;
-    entries[directoryLoc].parent = request.parent_cluster_number;
 
     // Identify the type of the requested new entry
     if (request.buffer_size == 0){
@@ -276,7 +275,7 @@ int8_t delete(struct FAT32DriverRequest request){
         }
 
         // Check if name is as requested
-        if (strcmp(request.name, entries[i].name, 8)){
+        if (strcmp(request.name, entries[i].name, 8) == 0){
 
             // Check the type of entry based on attribute
             if (entries[i].attribute){
@@ -308,11 +307,13 @@ int8_t delete(struct FAT32DriverRequest request){
             } else {
 
                 // If entry is a file, make sure whether the extension is same as requested
-                if (!strcmp(request.ext, entries[i].ext, 3)){
+                if (strcmp(request.ext, entries[i].ext, 3) == 0){
 
                     // Similiar Extension, delete file
                     entries[i].user_attribute = !UATTR_NOT_EMPTY;
                     entries[i].undelete = true;
+                    memset(entries[i].ext, '\0', 3);
+                    memset(entries[i].name, '\0', 8);
 
                     // Save into parent directory table
                     write_clusters(&fileSystem.dir_table_buf, request.parent_cluster_number, 1);
@@ -338,6 +339,9 @@ int8_t delete(struct FAT32DriverRequest request){
 
                     // Save FAT32 into disk
                     write_clusters(&fileSystem.fat_table, 1, 1);
+
+                    
+                    
 
                     // Deletion Sucessful
                     return 0;

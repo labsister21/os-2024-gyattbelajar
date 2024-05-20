@@ -4,7 +4,7 @@
 
 // recursive find
 void find_recursive(char* dir_name, char* parent_path, uint32_t parent_cluster, char directories[12][13], int curr_directory_index, int dir_count, bool* haveFound){
-    int cluster_number = findEntryName(dir_name);
+    int cluster_number = findEntryCluster(dir_name);
 
     if(cluster_number == -1) return;
     updateDirectoryTable(cluster_number);
@@ -98,10 +98,10 @@ void print_absolute_path(int current_file) {
 
     char path[6][16];
     int i = 0;
-    int current_directory_number = tempDir.table[current_file].parent;
+    int current_directory_number = tempDir.table[current_file].cluster_low | tempDir.table[current_file].cluster_high << 16;
     while (current_directory_number != ROOT_CLUSTER_NUMBER) {
         memcpy(path[i], tempDir.table[current_directory_number].name, 16);
-        current_directory_number = tempDir.table[current_directory_number].parent;
+        current_directory_number = tempDir.table[current_file].cluster_low | tempDir.table[current_file].cluster_high << 16;
         i++;
         if (i >= 10) break; // Safe type
     }
@@ -116,7 +116,7 @@ void print_absolute_path(int current_file) {
 
 void find2(char* filename) {
     struct FAT32DirectoryTable tempDir;
-    syscall(8, (uint32_t) &tempDir, ROOT_CLUSTER_NUMBER, 1);
+    syscall(8, (uint32_t) &tempDir, current_directory, 1);
 
     char name[8];
     int len = strlen(filename);
@@ -137,8 +137,8 @@ void find2(char* filename) {
 
     for (i = 0; i < 64; i++) {
         if (strcmp(name, tempDir.table[i].name, 8) == 0 && strcmp(ext, tempDir.table[i].ext, 3) == 0) {
-            print_absolute_path(i);
-            put(tempDir.table[i].name, BIOS_BROWN);
+            // print_absolute_path(i);
+            put(tempDir.table[i].name, BIOS_LIGHT_BLUE);
             int len = strlen(tempDir.table[i].ext);
             if (len != 0) {
                 syscall(5, '.', BIOS_LIGHT_BLUE, 0);
