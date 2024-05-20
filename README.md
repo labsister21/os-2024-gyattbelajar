@@ -78,6 +78,12 @@ Us after learning that making an operating system is hard to make 🥵🥵 🗿�
 After our experience making an operating system, we learned how much depth and complexity needed to design and built a simple Operating System. We learned the importance a single byte is inside the memory or the storage of an Operating System can effect the whole working an operating system. 
 
 
+<div align="center">
+
+![gigachad](img/meme.jpg)
+
+</div>
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
