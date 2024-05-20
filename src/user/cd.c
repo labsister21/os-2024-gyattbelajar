@@ -10,7 +10,6 @@ void cd(char argument[]) {
         return;
     }
     else if (strcmp(argument, "..", strlen(argument)) == 0) {
-    else if (strcmp(argument, "..", strlen(argument)) == 0) {
         if (current_directory == ROOT_CLUSTER_NUMBER) {
             put("Already in root directory!\n", BIOS_RED);
             return;
