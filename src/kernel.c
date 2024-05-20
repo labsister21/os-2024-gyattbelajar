@@ -42,25 +42,9 @@ void kernel_setup(void) {
     set_tss_kernel_current_stack();
 
     // Create & execute process 0
-    process_create_user_process(request);
+    // process_create_user_process(request);
     // paging_use_page_directory(_process_list[0].context.page_directory_virtual_addr);
     kernel_execute_user_program((void*) 0x0);
-
-    // // Dummy file
-    // // memcpy(&request.buf, "Ini sih cuman testing\n123", 25);
-    // memcpy(&request.name, "file1", 5);
-    // memcpy(&request.ext, "txt", 3);
-    // request.buffer_size = CLUSTER_SIZE;
-    // write(request);
-
-    // set_tss_kernel_current_stack();
-    // kernel_execute_user_program((uint8_t*) 0);
-    
-    // while (true){
-    //     char c;
-    //     get_keyboard_buffer(&c);
-    //     if (c) framebuffer_write(0, col++, c, 0xF, 0);
-    // }
 
     while (true);
     
