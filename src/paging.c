@@ -55,7 +55,7 @@ bool paging_allocate_check(uint32_t amount) {
 
     uint32_t frameAmount = (amount + PAGE_FRAME_SIZE - 1) / PAGE_FRAME_SIZE;
 
-    return page_manager_state.free_page_frame_count <= frameAmount;
+    return page_manager_state.free_page_frame_count >= frameAmount;
 }
 
 
