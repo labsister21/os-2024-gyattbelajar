@@ -27,7 +27,7 @@
     <h3>Made by Gyattbelajar:</h3>
     <table align="center">
       <tr>
-        <td>ID</td>
+        <td>NIM</td>
         <td>Name</td>
       </tr>
       <tr>
