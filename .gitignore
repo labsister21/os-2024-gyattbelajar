@@ -1,1 +1,3 @@
 *.o
+.gdb_history
+../.vscode/c_cpp_properties.json
